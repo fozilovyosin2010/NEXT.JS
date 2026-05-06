@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 
 const Header = () => {
   const Location = usePathname();
-  console.log(Location);
 
   return (
     <header className="p-[10px_20px]">
