@@ -19,7 +19,7 @@ const Header = () => {
             Home
           </Link>
           <Link
-            className={`${Location == "/jobs	" ? "text-[#3730A3] text-[16px] font-[700] border-b-[#3730A3] border-b-2" : null}`}
+            className={`${Location == "/jobs" ? "text-[#3730A3] text-[16px] font-[700] border-b-[#3730A3] border-b-2" : null}`}
             href={"/jobs"}
           >
             Find Jobs
