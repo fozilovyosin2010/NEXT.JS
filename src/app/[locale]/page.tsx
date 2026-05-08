@@ -1,10 +1,11 @@
 import Card from "@/components/Card";
 import { Banknote, Code, Hospital } from "lucide-react";
 
-import img1 from "../public/imgs/Img1.png";
+import img1 from "../../../public/imgs/Img1.png";
 import Steps from "@/components/Steps";
+import { getTranslations } from "next-intl/server";
 
-const page = () => {
+const page = async () => {
   const cardList: {
     id: number;
     des: string;
@@ -60,23 +61,25 @@ const page = () => {
     },
   ];
 
+  const t = await getTranslations("HomePage");
+
   return (
     <main className="min-h-screen bg-[#F8FAFC] max-w-[1440px] mx-auto">
       <section className="p-[96px_25px]">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div className="space-y-3">
             <h2 className="text-4xl md:text-5xl font-extrabold text-indigo-950 tracking-tight leading-tight">
-              Featured Job Categories
+              {t("featuredCategories")}
             </h2>
             <p className="text-gray-500 text-lg md:text-xl font-medium max-w-2xl">
-              Explore opportunities across high-growth industries.
+              {t("exploreOpportunities")}
             </p>
           </div>
           <a
             href="#"
             className="text-indigo-700 font-bold text-sm tracking-widest uppercase hover:text-indigo-900 transition-all duration-300 border-b-2 border-indigo-700 hover:border-indigo-900 pb-1 whitespace-nowrap"
           >
-            View All Categories
+            {t("viewAll")}
           </a>
         </div>
 
@@ -89,11 +92,10 @@ const page = () => {
       <section className="py-32 px-6 bg-white">
         <div className="text-center mb-20 space-y-4">
           <h2 className="text-4xl md:text-5xl font-extrabold text-indigo-950 tracking-tight">
-            Precision Recruitment
+            {t("precisionRecruitment")}
           </h2>
           <p className="text-gray-500 text-lg md:text-xl font-medium max-w-2xl mx-auto">
-            Our streamlined process ensures the perfect match between talent and
-            vision.
+            {t("recruitmentTagline")}
           </p>
         </div>
 

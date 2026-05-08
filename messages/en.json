@@ -1,0 +1,16 @@
+{
+  "HomePage": {
+    "title": "Welcome to our application!",
+    "description": "This is a sample application using next-intl for internationalization.",
+    "featuredCategories": "Featured Job Categories",
+    "exploreOpportunities": "Explore opportunities across high-growth industries.",
+    "viewAll": "View All Categories",
+    "precisionRecruitment": "Precision Recruitment",
+    "recruitmentTagline": "Our streamlined process ensures the perfect match between talent and vision."
+  },
+  "Navigation": {
+    "home": "Home",
+    "jobs": "Jobs",
+    "about": "About"
+  }
+}

@@ -1,9 +1,20 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
+import { useTranslations, useLocale } from "next-intl";
 
 const Header = () => {
-  const Location = usePathname();
+  const pathname = usePathname();
+  const locale = useLocale();
+
+  // for navigation
+  const router = useRouter();
+  const t = useTranslations("Navigation");
+
+  const handleLocaleChange = (newLocale: string) => {
+
+    // to change language of the page and navigate to the same page with new language
+    router.replace(pathname, { locale: newLocale });
+  };
 
   return (
     <header className="p-[10px_20px]">
@@ -13,25 +24,36 @@ const Header = () => {
         </Link>
         <nav className="flex gap-3">
           <Link
-            className={`${Location == "/" ? "text-[#3730A3] text-[16px] font-[700] border-b-[#3730A3] border-b-2" : null}`}
+            className={`${pathname === "/" ? "text-[#3730A3] text-[16px] font-[700] border-b-[#3730A3] border-b-2" : "text-gray-600 hover:text-[#3730A3]"}`}
             href={"/"}
           >
-            Home
+            {t("home")}
           </Link>
           <Link
-            className={`${Location == "/jobs" ? "text-[#3730A3] text-[16px] font-[700] border-b-[#3730A3] border-b-2" : null}`}
+            className={`${pathname === "/jobs" ? "text-[#3730A3] text-[16px] font-[700] border-b-[#3730A3] border-b-2" : "text-gray-600 hover:text-[#3730A3]"}`}
             href={"/jobs"}
           >
-            Find Jobs
+            {t("jobs")}
           </Link>
         </nav>
-        <div className="flex gap-[10px]">
-          <button className="text-[#3730A3] text-[16px] font-[700]">
-            Sign In
-          </button>
-          <button className="text-[#fff] p-[10px_15px] rounded-[10px] text-[16px] font-[700] bg-[#3730A3]">
-            Join Now
-          </button>
+        <div className="flex items-center gap-[20px]">
+          <select
+            value={locale}
+            onChange={(e) => handleLocaleChange(e.target.value)}
+            className="bg-transparent text-[#3730A3] font-semibold focus:outline-none cursor-pointer"
+          >
+            <option value="en">EN</option>
+            <option value="ru">RU</option>
+            <option value="tj">TJ</option>
+          </select>
+          <div className="flex gap-[10px]">
+            <button className="text-[#3730A3] text-[16px] font-[700]">
+              Sign In
+            </button>
+            <button className="text-[#fff] p-[10px_15px] rounded-[10px] text-[16px] font-[700] bg-[#3730A3]">
+              Join Now
+            </button>
+          </div>
         </div>
       </div>
     </header>
