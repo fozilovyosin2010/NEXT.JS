@@ -3,6 +3,6 @@ export interface Idata {
   name: string;
   city: string;
   job: string;
-  age: string;
+  age: number;
   status: boolean;
 }
