@@ -11,7 +11,6 @@ const Header = () => {
   const t = useTranslations("Navigation");
 
   const handleLocaleChange = (newLocale: string) => {
-
     // to change language of the page and navigate to the same page with new language
     router.replace(pathname, { locale: newLocale });
   };
