@@ -57,7 +57,9 @@ const Page = () => {
 
   const { data, error, isLoading } = useGetUsersQuery(inpSearch);
 
-  const [delData] = useDelUserMutation();
+  // error2, isLoading2 -> use it if values are identical
+  const [delData, { error: error2, isLoading: isLoading2 }] =
+    useDelUserMutation();
   const [addUser] = useAddUserMutation();
 
   // Modals state
