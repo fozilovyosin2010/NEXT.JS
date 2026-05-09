@@ -13,8 +13,8 @@ export const usersApi = createApi({
   endpoints: (builder) => ({
     //   there 2 types of requests: query(GET) and mutation(POST, DELETE, PUT, PATCH)
     getUsers: builder.query<Idata[], string>({
-      // here is query(params for search)
-      query: (name) => ``,
+      // here is query(params)
+      query: (name) => `?name=${name}`,
       providesTags: ["Users"],
     }),
 
@@ -36,10 +36,24 @@ export const usersApi = createApi({
       // track changes
       invalidatesTags: ["Users"],
     }),
+
+    editUser: builder.mutation<Omit<Idata, "id" | "status">, Idata>({
+      query: ({ id, ...obj }) => ({
+        url: `/${id}`,
+        method: "PUT",
+        body: obj,
+      }),
+      invalidatesTags: ["Users"],
+    }),
+    // !here search
   }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetUsersQuery, useDelUserMutation, useAddUserMutation } =
-  usersApi;
+export const {
+  useGetUsersQuery,
+  useDelUserMutation,
+  useAddUserMutation,
+  useEditUserMutation,
+} = usersApi;

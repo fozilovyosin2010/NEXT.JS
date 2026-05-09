@@ -34,6 +34,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   useAddUserMutation,
   useDelUserMutation,
+  useEditUserMutation,
   useGetUsersQuery,
 } from "@/api/users.api";
 import { Idata } from "@/api/types.api";
@@ -42,7 +43,7 @@ import { SpinnerCom } from "@/components/Loader";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const formSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -52,7 +53,10 @@ const formSchema = Yup.object({
 });
 
 const Page = () => {
-  const { data, error, isLoading } = useGetUsersQuery("");
+  const [inpSearch, setInpSearch] = useState("");
+
+  const { data, error, isLoading } = useGetUsersQuery(inpSearch);
+
   const [delData] = useDelUserMutation();
   const [addUser] = useAddUserMutation();
 
@@ -63,6 +67,8 @@ const Page = () => {
 
   // Selected user for Edit/View
   const [currentUser, setCurrentUser] = useState<Idata | null>(null);
+
+  const [editUser] = useEditUserMutation();
 
   // Form for Add/Edit
   const {
@@ -97,11 +103,8 @@ const Page = () => {
 
   // Handle Edit Submit (PUT Logic)
   const onEditSubmit = (formData: any) => {
-    console.log(
-      "PUT Request logic here for user ID:",
-      currentUser?.id,
-      formData,
-    );
+    // console.log(currentUser?.id, formData);
+    editUser({ ...formData, id: currentUser?.id });
     // TODO: Implement putUser mutation and call it here
     // await updateUser({ id: currentUser.id, ...formData });
     setEditModal(false);
@@ -110,13 +113,8 @@ const Page = () => {
 
   // Handle Status Toggle (Checked Logic)
   const onStatusToggle = (user: Idata) => {
-    console.log(
-      "Checked/Status toggle logic here for user:",
-      user.id,
-      !user.status,
-    );
-    // TODO: Implement toggleStatus/putUser mutation and call it here
-    // await updateStatus({ id: user.id, status: !user.status });
+    const obj = { ...user, status: !user.status };
+    editUser(obj);
   };
 
   // Handle View Details (GetById Design)
@@ -135,6 +133,10 @@ const Page = () => {
     setEditModal(true);
   };
 
+  function hanChanSearch(e: any) {
+    setInpSearch(e.target.value);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -149,6 +151,7 @@ const Page = () => {
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <Input
+              onChange={hanChanSearch}
               type="text"
               className="max-w-xs bg-gray-50"
               placeholder="Search users..."
