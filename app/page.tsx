@@ -33,10 +33,13 @@ const page = () => {
 
       // it checks data to match the scema
       const res = schema.safeParse(data);
+
       if (res.success) {
         setUsers(data);
       } else if (!res.success) {
-        setUsers(data);
+        setUsers([]);
+
+        console.log(res.error);
       }
     } catch (error) {
       console.error(error);
