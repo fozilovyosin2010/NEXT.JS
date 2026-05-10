@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+table tr,
+th,
+td {
+  border: 1px solid;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
