@@ -1,4 +1,3 @@
-import { invalidData } from "./../node_modules/@hookform/resolvers/ajv/src/__tests__/__fixtures__/data";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Idata } from "./types.api";
 
