@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontalIcon, Search, UserPlus } from "lucide-react";
+import { Info, MoreHorizontalIcon, Search, UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -44,8 +44,11 @@ import { SpinnerBadge } from "@/components/LoaderCom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User, UserSchema } from "@/api/types.api";
+import { useRouter } from "next/navigation";
 
 const ClientsPage = () => {
+  const navigate = useRouter();
+
   const [inpSearch, setInpSearch] = useState("");
 
   const { data, isLoading } = useGetUsersQuery(inpSearch);
@@ -62,7 +65,7 @@ const ClientsPage = () => {
   }
 
   const {
-    register: registerAdd,
+    register,
     handleSubmit: handleSubmitAdd,
     reset,
     setValue,
@@ -129,6 +132,11 @@ const ClientsPage = () => {
     setValue("address", obj.address);
   }
 
+  ////info
+  function hanInfoBtn(id: string | any) {
+    navigate.push(`/clients/${id}`);
+  }
+
   return (
     <div className="p-5">
       <div className="flex justify-between items-center">
@@ -154,6 +162,7 @@ const ClientsPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Avatar</TableHead>
               <TableHead>Full Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
@@ -164,6 +173,13 @@ const ClientsPage = () => {
           <TableBody>
             {data?.map((user) => (
               <TableRow key={user.id}>
+                <TableCell>
+                  <img
+                    src={user.image}
+                    alt={"404"}
+                    className="w-[30px] h-[30px] rounded-full"
+                  />
+                </TableCell>
                 <TableCell className="font-medium">{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
@@ -180,7 +196,13 @@ const ClientsPage = () => {
                       <DropdownMenuItem onClick={() => hanEditBtn(user)}>
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => hanInfoBtn(user?.id)}
+                        className="flex items-center"
+                      >
+                        <Info />
+                        <span>Info</span>
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => hanDelBtn(user?.id)}
@@ -226,7 +248,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Full Name"
-                    {...registerAdd("fullName")}
+                    {...register("fullName")}
                   />
                 </label>
                 <label>
@@ -235,7 +257,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="email"
                     placeholder="Email"
-                    {...registerAdd("email")}
+                    {...register("email")}
                   />
                 </label>
                 <label>
@@ -244,7 +266,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Phone"
-                    {...registerAdd("phone")}
+                    {...register("phone")}
                   />
                 </label>
                 <label>
@@ -253,7 +275,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="image"
-                    {...registerAdd("image")}
+                    {...register("image")}
                   />
                 </label>
                 <label>
@@ -262,7 +284,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Company"
-                    {...registerAdd("company.name")}
+                    {...register("company.name")}
                   />
                 </label>
                 <label>
@@ -271,7 +293,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Department"
-                    {...registerAdd("company.department")}
+                    {...register("company.department")}
                   />
                 </label>
                 <label>
@@ -280,7 +302,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Title"
-                    {...registerAdd("company.title")}
+                    {...register("company.title")}
                   />
                 </label>
                 <label>
@@ -289,7 +311,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Address"
-                    {...registerAdd("address")}
+                    {...register("address")}
                   />
                 </label>
               </div>
@@ -337,7 +359,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Full Name"
-                    {...registerAdd("fullName")}
+                    {...register("fullName")}
                   />
                 </label>
                 <label>
@@ -346,7 +368,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="email"
                     placeholder="Email"
-                    {...registerAdd("email")}
+                    {...register("email")}
                   />
                 </label>
                 <label>
@@ -355,7 +377,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Phone"
-                    {...registerAdd("phone")}
+                    {...register("phone")}
                   />
                 </label>
                 <label>
@@ -364,7 +386,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="image"
-                    {...registerAdd("image")}
+                    {...register("image")}
                   />
                 </label>
                 <label>
@@ -373,7 +395,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Company"
-                    {...registerAdd("company.name")}
+                    {...register("company.name")}
                   />
                 </label>
                 <label>
@@ -382,7 +404,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Department"
-                    {...registerAdd("company.department")}
+                    {...register("company.department")}
                   />
                 </label>
                 <label>
@@ -391,7 +413,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Title"
-                    {...registerAdd("company.title")}
+                    {...register("company.title")}
                   />
                 </label>
                 <label>
@@ -400,7 +422,7 @@ const ClientsPage = () => {
                     className="border p-[10px_15px] w-full"
                     type="text"
                     placeholder="Address"
-                    {...registerAdd("address")}
+                    {...register("address")}
                   />
                 </label>
               </div>
