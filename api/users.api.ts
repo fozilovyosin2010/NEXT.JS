@@ -21,7 +21,16 @@ export const usersApi = createApi({
       }),
       invalidatesTags: ["Users"],
     }),
+    addData: builder.mutation({
+      query: (obj: User) => ({
+        url: "/",
+        method: "POST",
+        body: obj,
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useDelDataMutation } = usersApi;
+export const { useGetUsersQuery, useDelDataMutation, useAddDataMutation } =
+  usersApi;

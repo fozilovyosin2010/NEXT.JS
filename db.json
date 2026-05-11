@@ -90,6 +90,45 @@
         "title": "Human Resources Manager"
       },
       "address": "568 Tenth Street, San Francisco, MT"
+    },
+    {
+      "fullName": "fwufiuw gwhugiwu",
+      "email": "fwhguwie@gmail.com",
+      "phone": "18",
+      "image": "https://face",
+      "company": {
+        "name": "foiwefjowij",
+        "department": "eqoiwjoqi",
+        "title": "idjqoijfw"
+      },
+      "address": "hiwu4hiu34",
+      "id": "mViKb1c_OHM"
+    },
+    {
+      "fullName": "fwufiuw gwhugiwu",
+      "email": "fwhguwie@gmail.com",
+      "phone": "16",
+      "image": "https://fwef",
+      "company": {
+        "name": "e23wejfoi",
+        "department": "fiefhiwue",
+        "title": "hgirugheiur"
+      },
+      "address": "hiwu4hiu34",
+      "id": "M-PLemd9OXo"
+    },
+    {
+      "fullName": "fwei",
+      "email": "fwhguwie@gmail.com",
+      "phone": "23",
+      "image": "https://fwiefjoiwe",
+      "company": {
+        "name": "fwoijefijweoi",
+        "department": "iowejfiow",
+        "title": "fowejofi"
+      },
+      "address": "hiwu4hiu34",
+      "id": "AXOXyMvNKmk"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
