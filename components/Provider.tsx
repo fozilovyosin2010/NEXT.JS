@@ -1,6 +1,5 @@
 "use client";
 
-import { useGetUsersQuery } from "@/api/users.api";
 import { store } from "@/store/store";
 import { ReactNode } from "react";
 import { Provider } from "react-redux";

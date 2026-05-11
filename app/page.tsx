@@ -1,466 +1,124 @@
 "use client";
 
-import { Eye, MoreHorizontal, Pencil, Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useForm } from "react-hook-form";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 
-import {
-  useAddUserMutation,
-  useDelUserMutation,
-  useEditUserMutation,
-  useGetUsersQuery,
-} from "@/api/users.api";
-import { Idata } from "@/api/types.api";
-import { SpinnerCom } from "@/components/Loader";
+import { ArrowRight } from "lucide-react";
 
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+
 const formSchema = z.object({
-  name: z.string(),
-  city: z.string(),
-  job: z.string(),
-  age: z.number().positive(),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
 });
 
-const Page = () => {
-  const [inpSearch, setInpSearch] = useState("");
-
-  const { data, error, isLoading } = useGetUsersQuery(inpSearch);
-
-  // error2, isLoading2 -> use it if values are identical
-  const [delData, { error: error2, isLoading: isLoading2 }] =
-    useDelUserMutation();
-  const [addUser] = useAddUserMutation();
-
-  // Modals state
-  const [addModal, setAddModal] = useState(false);
-  const [editModal, setEditModal] = useState(false);
-  const [viewModal, setViewModal] = useState(false);
-
-  // Selected user for Edit/View
-  const [currentUser, setCurrentUser] = useState<Idata | null>(null);
-
-  const [editUser] = useEditUserMutation();
-
-  // Form for Add/Edit
+export default function LoginPage() {
+  const navigate = useRouter();
   const {
     register,
-    reset,
     handleSubmit,
-    setValue,
-    formState: { errors },
+    formState: { isSubmitting, errors, isLoading },
   } = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      city: "",
-      job: "",
-      age: 0,
-    },
   });
 
-  // Handle Delete
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this user?")) {
-      delData(id);
-    }
+  const onSubmit = async (values: any) => {
+    setTimeout(() => {
+      console.log(values);
+      navigate.push("/clients");
+    }, 5000);
   };
 
-  // Handle Add Submit
-  const onAddSubmit = (formData: any) => {
-    addUser({ ...formData, status: false });
-    setAddModal(false);
-    reset();
-  };
-
-  // Handle Edit Submit (PUT Logic)
-  const onEditSubmit = (formData: any) => {
-    // console.log(currentUser?.id, formData);
-    editUser({ ...formData, id: currentUser?.id });
-    // TODO: Implement putUser mutation and call it here
-    // await updateUser({ id: currentUser.id, ...formData });
-    setEditModal(false);
-    reset();
-  };
-
-  // Handle Status Toggle (Checked Logic)
-  const onStatusToggle = (user: Idata) => {
-    const obj = { ...user, status: !user.status };
-    editUser(obj);
-  };
-
-  // Handle View Details (GetById Design)
-  const handleView = (user: Idata) => {
-    setCurrentUser(user);
-    setViewModal(true);
-  };
-
-  // Handle Edit Click
-  const handleEdit = (user: Idata) => {
-    setCurrentUser(user);
-    setValue("name", user.name);
-    setValue("city", user.city);
-    setValue("job", user.job);
-    setValue("age", user.age);
-    setEditModal(true);
-  };
-
-  function hanChanSearch(e: any) {
-    setInpSearch(e.target.value);
-  }
+  console.log(isSubmitting);
+  console.log("render");
 
   return (
-    <div className="min-h-screen bg-gray-50/50 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-xl shadow-sm border">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              User Management
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              Manage your team members and their roles.
-            </p>
-          </div>
-          <div className="flex gap-3 w-full md:w-auto">
-            <Input
-              onChange={hanChanSearch}
-              type="text"
-              className="max-w-xs bg-gray-50"
-              placeholder="Search users..."
-            />
-            <Button
-              onClick={() => {
-                reset();
-                setAddModal(true);
-              }}
-              className="shadow-sm"
-            >
-              Add User
-            </Button>
-          </div>
-        </header>
-
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-          <Table>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead className="w-[200px]">Name</TableHead>
-                <TableHead>City</TableHead>
-                <TableHead>Job</TableHead>
-                <TableHead>Age</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data?.map((e: Idata) => {
-                return (
-                  <TableRow key={e.id}>
-                    <TableCell className="font-medium">{e.name}</TableCell>
-                    <TableCell>{e.city}</TableCell>
-                    <TableCell>{e.job}</TableCell>
-                    <TableCell>{e.age}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={e.status}
-                          onCheckedChange={() => onStatusToggle(e)}
-                        />
-                        <span
-                          className={`text-xs font-semibold px-2 py-1 rounded-full ${e.status ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
-                        >
-                          {e.status ? "ACTIVE" : "INACTIVE"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 hover:bg-gray-100"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[160px]">
-                          <DropdownMenuItem onClick={() => handleView(e)}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Info
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleEdit(e)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(e.id)}
-                            className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                          >
-                            <Trash className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-
-          {isLoading && (
-            <div className="flex justify-center p-12">
-              <SpinnerCom />
-            </div>
-          )}
-
-          {!isLoading && data?.length === 0 && (
-            <div className="text-center p-12 text-muted-foreground">
-              No users found.
-            </div>
-          )}
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-slate-50/50 p-6 dark:bg-slate-950">
+      <div className="relative z-10 w-full max-w-[420px] space-y-8">
+        <div className="flex flex-col items-center space-y-2 text-center">
+          <h1 className="text-4xl font-[800] tracking-tight text-foreground sm:text-5xl">
+            Login
+          </h1>
+          <p className="text-muted-foreground">
+            Welcome back, please enter your details
+          </p>
         </div>
+
+        <div className="overflow-hidden rounded-3xl border border-border/50 bg-card/80 p-8 shadow-2xl shadow-primary/5 backdrop-blur-xl sm:p-10">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2.5">
+                <Label htmlFor="email" className="text-sm font-semibold ml-1">
+                  Email address
+                </Label>
+                {errors.email && (
+                  <p className="text-red-500">{errors.email.message}</p>
+                )}
+                <Input
+                  type="email"
+                  placeholder="name@company.com"
+                  {...register("email")}
+                  className="h-12 rounded-2xl border-border/60 bg-background/50 px-4 transition-all duration-200 focus:bg-background focus:ring-primary/20"
+                />
+              </div>
+
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between ml-1">
+                  <Label htmlFor="password" className="text-sm font-semibold">
+                    Password
+                  </Label>
+                  <a
+                    href="#"
+                    className="text-xs font-bold text-primary transition-colors hover:text-primary/80"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+                {errors.password && (
+                  <p className="text-red-500">{errors.password.message}</p>
+                )}
+                <Input
+                  type="password"
+                  placeholder="password"
+                  {...register("password")}
+                  className="h-12 rounded-2xl border-border/60 bg-background/50 px-4 transition-all duration-200 focus:bg-background focus:ring-primary/20"
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-13 rounded-2xl font-bold shadow-lg transition-all duration-300 hover:scale-90 "
+            >
+              {isLoading ? (
+                "Signing in..."
+              ) : (
+                <>
+                  Sign in
+                  <ArrowRight className="ml-2 size-5" />
+                </>
+              )}
+            </Button>
+          </form>
+        </div>
+
+        <p className="text-center text-sm text-muted-foreground">
+          Don't have an account?{" "}
+          <a
+            href="#"
+            className="font-bold text-primary transition-colors hover:text-primary/80 underline-offset-4 hover:underline"
+          >
+            Request access
+          </a>
+        </p>
       </div>
-
-      {/* Add User Modal */}
-      <Dialog open={addModal} onOpenChange={setAddModal}>
-        <DialogContent className="sm:max-w-[425px]">
-          <form onSubmit={handleSubmit(onAddSubmit)}>
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-              <DialogDescription>
-                Fill in the details to create a new user profile.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="add-name">Name</Label>
-                <Input
-                  id="add-name"
-                  {...register("name")}
-                  placeholder="John Doe"
-                />
-                {errors.name && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="add-city">City</Label>
-                <Input
-                  id="add-city"
-                  {...register("city")}
-                  placeholder="New York"
-                />
-                {errors.city && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.city.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="add-job">Job</Label>
-                <Input
-                  id="add-job"
-                  {...register("job")}
-                  placeholder="Developer"
-                />
-                {errors.job && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.job.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="add-age">Age</Label>
-                <Input
-                  id="add-age"
-                  type="number"
-                  {...register("age")}
-                  placeholder="25"
-                />
-                {errors.age && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.age.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setAddModal(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">Create User</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit User Modal (PUT Design) */}
-      <Dialog open={editModal} onOpenChange={setEditModal}>
-        <DialogContent className="sm:max-w-[425px]">
-          <form onSubmit={handleSubmit(onEditSubmit)}>
-            <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
-              <DialogDescription>
-                Update the user profile information.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="edit-name">Name</Label>
-                <Input id="edit-name" {...register("name")} />
-                {errors.name && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-city">City</Label>
-                <Input id="edit-city" {...register("city")} />
-                {errors.city && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.city.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-job">Job</Label>
-                <Input id="edit-job" {...register("job")} />
-                {errors.job && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.job.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-age">Age</Label>
-                <Input id="edit-age" type="number" {...register("age")} />
-                {errors.age && (
-                  <p className="text-xs text-red-500 font-medium">
-                    {errors.age.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setEditModal(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">Save Changes</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* View User Modal (GetById Design) */}
-      <Dialog open={viewModal} onOpenChange={setViewModal}>
-        <DialogContent className="sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle>User Information</DialogTitle>
-            <DialogDescription>
-              Detailed view of the user profile.
-            </DialogDescription>
-          </DialogHeader>
-          {currentUser && (
-            <div className="space-y-6 py-4">
-              <div className="flex flex-col items-center gap-2">
-                <div className="h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold">
-                  {currentUser.name.charAt(0)}
-                </div>
-                <h3 className="text-xl font-semibold">{currentUser.name}</h3>
-                <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-full ${currentUser.status ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
-                >
-                  {currentUser.status ? "ACTIVE" : "INACTIVE"}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 border-t pt-4">
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    City
-                  </p>
-                  <p className="font-medium">{currentUser.city}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    Age
-                  </p>
-                  <p className="font-medium">{currentUser.age} years old</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    Job Title
-                  </p>
-                  <p className="font-medium">{currentUser.job}</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    User ID
-                  </p>
-                  <p className="text-xs font-mono text-gray-500">
-                    {currentUser.id}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" className="w-full">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+    </main>
   );
-};
-
-export default Page;
+}
