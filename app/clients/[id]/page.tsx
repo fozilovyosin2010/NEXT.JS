@@ -1,5 +1,6 @@
-const page = () => {
-  return <div>page</div>;
+const ClientPageById = async ({ params }: { params: { id: string } }) => {
+  const param = await params;
+  return <div>ClientPageById: {param.id}</div>;
 };
 
-export default page;
+export default ClientPageById;

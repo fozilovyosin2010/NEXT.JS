@@ -8,7 +8,6 @@ export const usersApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: api }),
   tagTypes: ["Users"],
   endpoints: (builder) => ({
-    //   there 2 types of requests: query(GET) and mutation(POST, DELETE, PUT, PATCH)
     getUsers: builder.query<Idata[], string>({
       // here is query(params)
       query: (name) => `?name=${name}`,

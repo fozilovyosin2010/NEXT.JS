@@ -20,6 +20,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const navigate = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -29,14 +30,15 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (values: any) => {
+    console.log(values);
+    // here
     setTimeout(() => {
       console.log(values);
-      navigate.push("/clients");
-    }, 5000);
-  };
 
-  console.log(isSubmitting);
-  console.log("render");
+      localStorage.setItem("user", JSON.stringify(values));
+      navigate.push("/clients");
+    }, 1000);
+  };
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-slate-50/50 p-6 dark:bg-slate-950">
@@ -113,7 +115,7 @@ export default function LoginPage() {
           Don't have an account?{" "}
           <a
             href="#"
-            className="font-bold text-primary transition-colors hover:text-primary/80 underline-offset-4 hover:underline"
+            className="font-bold text-primary transition-colors hover:text-primary/80 underline-offset-5 hover:underline"
           >
             Request access
           </a>
