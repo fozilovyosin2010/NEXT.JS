@@ -6,12 +6,8 @@ export const UserSchema = z.object({
   id: z.string().optional(),
   fullName: z.string().nonempty("Full name is required"),
   email: z.string().email("Invalid email"),
-  phone: z.coerce
-    .number()
-    .positive()
-    .max(50)
-    .transform((val) => val.toString()),
-  // phone: z.string().regex(phoneRegex, "Invalid phone number"),
+  // phone: z.coerce.number().transform((val) => val.toString()),
+  phone: z.string().regex(phoneRegex, "Invalid phone number").min(9),
   image: z.string().url("It must start with http:// or https://"),
   company: z.object({
     name: z.string().nonempty("Company name is required"),

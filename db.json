@@ -1,20 +1,19 @@
 {
   "users": [
     {
-      "id": "4",
-      "fullName": "James Davis",
+      "fullName": "James Davis_yosin",
       "email": "james.davis@x.dummyjson.com",
-      "phone": "+49 614-958-9364",
+      "phone": "+ 6149589364",
       "image": "https://dummyjson.com/icon/jamesd/128",
       "company": {
         "name": "Pagac and Sons",
         "department": "Support",
         "title": "Research Analyst"
       },
-      "address": "238 Jefferson Street, Seattle, PA"
+      "address": "238 Jefferson Street, Seattle, PA",
+      "id": "4"
     },
     {
-      "id": "5",
       "fullName": "Emma Miller",
       "email": "emma.miller@x.dummyjson.com",
       "phone": "+91 759-776-1614",
@@ -24,7 +23,8 @@
         "department": "Human Resources",
         "title": "Quality Assurance Engineer"
       },
-      "address": "607 Fourth Street, Jacksonville, CO"
+      "address": "607 Fourth Street, Jacksonville, CO",
+      "id": "5"
     },
     {
       "id": "6",
@@ -92,43 +92,17 @@
       "address": "568 Tenth Street, San Francisco, MT"
     },
     {
-      "fullName": "fwufiuw gwhugiwu",
+      "fullName": "fwuiefuiweh",
       "email": "fwhguwie@gmail.com",
-      "phone": "18",
-      "image": "https://face",
+      "phone": "+ 93 2939833",
+      "image": "https://fiwefoijw",
       "company": {
-        "name": "foiwefjowij",
-        "department": "eqoiwjoqi",
-        "title": "idjqoijfw"
+        "name": "fwie",
+        "department": "jfwejfwi",
+        "title": "fiwje"
       },
       "address": "hiwu4hiu34",
-      "id": "mViKb1c_OHM"
-    },
-    {
-      "fullName": "fwufiuw gwhugiwu",
-      "email": "fwhguwie@gmail.com",
-      "phone": "16",
-      "image": "https://fwef",
-      "company": {
-        "name": "e23wejfoi",
-        "department": "fiefhiwue",
-        "title": "hgirugheiur"
-      },
-      "address": "hiwu4hiu34",
-      "id": "M-PLemd9OXo"
-    },
-    {
-      "fullName": "fwei",
-      "email": "fwhguwie@gmail.com",
-      "phone": "23",
-      "image": "https://fwiefjoiwe",
-      "company": {
-        "name": "fwoijefijweoi",
-        "department": "iowejfiow",
-        "title": "fowejofi"
-      },
-      "address": "hiwu4hiu34",
-      "id": "AXOXyMvNKmk"
+      "id": "z_gxfKWQekc"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
