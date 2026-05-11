@@ -1,49 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
-      "fullName": "Emily Johnson",
-      "email": "emily.johnson@x.dummyjson.com",
-      "phone": "+81 965-431-3024",
-      "image": "https://dummyjson.com/icon/emilys/128",
-      "company": {
-        "name": "Dooley, Kozey and Cronin",
-        "department": "Engineering",
-        "title": "Sales Manager"
-      },
-      "address": "626 Main Street, Phoenix, MS",
-      "role": "admin"
-    },
-    {
-      "id": 2,
-      "fullName": "Michael Williams",
-      "email": "michael.williams@x.dummyjson.com",
-      "phone": "+49 258-627-6644",
-      "image": "https://dummyjson.com/icon/michaelw/128",
-      "company": {
-        "name": "Spinka - Dickinson",
-        "department": "Support",
-        "title": "Support Specialist"
-      },
-      "address": "385 Fifth Street, Houston, AL",
-      "role": "admin"
-    },
-    {
-      "id": 3,
-      "fullName": "Sophia Brown",
-      "email": "sophia.brown@x.dummyjson.com",
-      "phone": "+81 210-652-2785",
-      "image": "https://dummyjson.com/icon/sophiab/128",
-      "company": {
-        "name": "Schiller - Zieme",
-        "department": "Research and Development",
-        "title": "Accountant"
-      },
-      "address": "1642 Ninth Street, Washington, AL",
-      "role": "admin"
-    },
-    {
-      "id": 4,
+      "id": "4",
       "fullName": "James Davis",
       "email": "james.davis@x.dummyjson.com",
       "phone": "+49 614-958-9364",
@@ -53,11 +11,10 @@
         "department": "Support",
         "title": "Research Analyst"
       },
-      "address": "238 Jefferson Street, Seattle, PA",
-      "role": "admin"
+      "address": "238 Jefferson Street, Seattle, PA"
     },
     {
-      "id": 5,
+      "id": "5",
       "fullName": "Emma Miller",
       "email": "emma.miller@x.dummyjson.com",
       "phone": "+91 759-776-1614",
@@ -67,11 +24,10 @@
         "department": "Human Resources",
         "title": "Quality Assurance Engineer"
       },
-      "address": "607 Fourth Street, Jacksonville, CO",
-      "role": "admin"
+      "address": "607 Fourth Street, Jacksonville, CO"
     },
     {
-      "id": 6,
+      "id": "6",
       "fullName": "Olivia Wilson",
       "email": "olivia.wilson@x.dummyjson.com",
       "phone": "+91 607-295-6448",
@@ -81,11 +37,10 @@
         "department": "Product Management",
         "title": "Research Analyst"
       },
-      "address": "547 First Street, Fort Worth, TN",
-      "role": "moderator"
+      "address": "547 First Street, Fort Worth, TN"
     },
     {
-      "id": 11,
+      "id": "11",
       "fullName": "Liam Garcia",
       "email": "liam.garcia@x.dummyjson.com",
       "phone": "+92 870-217-6201",
@@ -95,11 +50,10 @@
         "department": "Services",
         "title": "Web Developer"
       },
-      "address": "576 Fifth Street, Denver, SD",
-      "role": "moderator"
+      "address": "576 Fifth Street, Denver, SD"
     },
     {
-      "id": 15,
+      "id": "15",
       "fullName": "William Gonzalez",
       "email": "william.gonzalez@x.dummyjson.com",
       "phone": "+81 905-252-7319",
@@ -109,11 +63,10 @@
         "department": "Marketing",
         "title": "Software Architect"
       },
-      "address": "31 Maple Street, San Jose, UT",
-      "role": "moderator"
+      "address": "31 Maple Street, San Jose, UT"
     },
     {
-      "id": 21,
+      "id": "21",
       "fullName": "Madison Collins",
       "email": "madison.collins@x.dummyjson.com",
       "phone": "+81 259-957-5711",
@@ -123,11 +76,10 @@
         "department": "Engineering",
         "title": "Chief Technology Officer"
       },
-      "address": "1892 Lincoln Street, Philadelphia, NJ",
-      "role": "user"
+      "address": "1892 Lincoln Street, Philadelphia, NJ"
     },
     {
-      "id": 30,
+      "id": "30",
       "fullName": "Addison Wright",
       "email": "addison.wright@x.dummyjson.com",
       "phone": "+1 514-384-3300",
@@ -137,8 +89,8 @@
         "department": "Services",
         "title": "Human Resources Manager"
       },
-      "address": "568 Tenth Street, San Francisco, MT",
-      "role": "user"
+      "address": "568 Tenth Street, San Francisco, MT"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
