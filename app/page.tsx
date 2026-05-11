@@ -41,15 +41,16 @@ import { Idata } from "@/api/types.api";
 import { SpinnerCom } from "@/components/Loader";
 
 import { useForm } from "react-hook-form";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { z } from "zod";
 
-const formSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-  city: Yup.string().required("City is required"),
-  job: Yup.string().required("Job is required"),
-  age: Yup.number().required("Age is required").positive().integer(),
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const formSchema = z.object({
+  name: z.string(),
+  city: z.string(),
+  job: z.string(),
+  age: z.number().positive(),
 });
 
 const Page = () => {
@@ -80,7 +81,8 @@ const Page = () => {
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(formSchema),
+    // here
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       city: "",
