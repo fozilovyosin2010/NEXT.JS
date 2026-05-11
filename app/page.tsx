@@ -81,7 +81,6 @@ const Page = () => {
     setValue,
     formState: { errors },
   } = useForm({
-    // here
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
