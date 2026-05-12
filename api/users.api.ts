@@ -1,7 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Idata } from "./types.api";
 
+import axios from "axios";
+
 const api = "https://667ab3c9bd627f0dcc90219a.mockapi.io/addTocart";
+
+export const getUserData = async (q: string = "") => {
+  const { data } = await axios.get(`${api}?name=${q}`);
+  return data;
+};
 
 export const usersApi = createApi({
   reducerPath: "usersApi",

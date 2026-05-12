@@ -32,10 +32,11 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 import {
-  useAddUserMutation,
-  useDelUserMutation,
-  useEditUserMutation,
-  useGetUsersQuery,
+  getUserData,
+  // useAddUserMutation,
+  // useDelUserMutation,
+  // useEditUserMutation,
+  // useGetUsersQuery,
 } from "@/api/users.api";
 import { Idata } from "@/api/types.api";
 import { SpinnerCom } from "@/components/Loader";
@@ -44,6 +45,8 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const formSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -55,12 +58,18 @@ const formSchema = Yup.object({
 const Page = () => {
   const [inpSearch, setInpSearch] = useState("");
 
-  const { data, error, isLoading } = useGetUsersQuery(inpSearch);
+  const { data } = useQuery({
+    queryKey: ["Users"],
+    queryFn: getUserData,
+  });
+  console.log(data);
+
+  // const { data, error, isLoading } = useGetUsersQuery(inpSearch);
 
   // error2, isLoading2 -> use it if values are identical
-  const [delData, { error: error2, isLoading: isLoading2 }] =
-    useDelUserMutation();
-  const [addUser] = useAddUserMutation();
+  // const [delData, { error: error2, isLoading: isLoading2 }] =
+  // useDelUserMutation();
+  // const [addUser] = useAddUserMutation();
 
   // Modals state
   const [addModal, setAddModal] = useState(false);
@@ -70,7 +79,7 @@ const Page = () => {
   // Selected user for Edit/View
   const [currentUser, setCurrentUser] = useState<Idata | null>(null);
 
-  const [editUser] = useEditUserMutation();
+  // const [editUser] = useEditUserMutation();
 
   // Form for Add/Edit
   const {
@@ -92,7 +101,8 @@ const Page = () => {
   // Handle Delete
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this user?")) {
-      delData(id);
+      // here
+      // delData(id);
     }
   };
 
@@ -106,7 +116,7 @@ const Page = () => {
   // Handle Edit Submit (PUT Logic)
   const onEditSubmit = (formData: any) => {
     // console.log(currentUser?.id, formData);
-    editUser({ ...formData, id: currentUser?.id });
+    // editUser({ ...formData, id: currentUser?.id });
     // TODO: Implement putUser mutation and call it here
     // await updateUser({ id: currentUser.id, ...formData });
     setEditModal(false);
@@ -116,7 +126,8 @@ const Page = () => {
   // Handle Status Toggle (Checked Logic)
   const onStatusToggle = (user: Idata) => {
     const obj = { ...user, status: !user.status };
-    editUser(obj);
+    // here
+    // editUser(obj);
   };
 
   // Handle View Details (GetById Design)
@@ -241,7 +252,8 @@ const Page = () => {
             </TableBody>
           </Table>
 
-          {isLoading && (
+          {/* here */}
+          {/* {isLoading && (
             <div className="flex justify-center p-12">
               <SpinnerCom />
             </div>
@@ -251,7 +263,7 @@ const Page = () => {
             <div className="text-center p-12 text-muted-foreground">
               No users found.
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
