@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
   User,
-  Mail,
   MapPin,
   Briefcase,
-  Calendar,
   ShieldCheck,
   ExternalLink,
 } from "lucide-react";

@@ -128,7 +128,7 @@ const Page = () => {
 
     // use "mutate" for passing arg to UseMutation
     postMutation.mutate({ ...formData, status: false });
-    // setAddModal(false);
+    setAddModal(false);
   };
 
   // Handle Edit Submit (PUT Logic)
@@ -153,11 +153,6 @@ const Page = () => {
 
     navigate.push(`user/${id}`);
   };
-  // here
-  // const handleView = (user: Idata) => {
-  //   setCurrentUser(user);
-  //   setViewModal(true);
-  // };
 
   // Handle Edit Click
   const handleEdit = (user: Idata) => {
@@ -429,69 +424,6 @@ const Page = () => {
           </form>
         </DialogContent>
       </Dialog>
-
-      {/* View User Modal (GetById Design) */}
-      {/* <Dialog open={viewModal} onOpenChange={setViewModal}>
-        <DialogContent className="sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle>User Information</DialogTitle>
-            <DialogDescription>
-              Detailed view of the user profile.
-            </DialogDescription>
-          </DialogHeader>
-          {currentUser && (
-            <div className="space-y-6 py-4">
-              <div className="flex flex-col items-center gap-2">
-                <div className="h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold">
-                  {currentUser.name.charAt(0)}
-                </div>
-                <h3 className="text-xl font-semibold">{currentUser.name}</h3>
-                <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-full ${currentUser.status ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
-                >
-                  {currentUser.status ? "ACTIVE" : "INACTIVE"}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 border-t pt-4">
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    City
-                  </p>
-                  <p className="font-medium">{currentUser.city}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    Age
-                  </p>
-                  <p className="font-medium">{currentUser.age} years old</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    Job Title
-                  </p>
-                  <p className="font-medium">{currentUser.job}</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-xs text-muted-foreground uppercase font-semibold">
-                    User ID
-                  </p>
-                  <p className="text-xs font-mono text-gray-500">
-                    {currentUser.id}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" className="w-full">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> */}
     </div>
   );
 };
