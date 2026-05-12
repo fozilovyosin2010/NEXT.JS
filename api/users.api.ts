@@ -24,56 +24,6 @@ export const delUserData = async (id: string) => {
   return await myAxios.delete(`/${id}`);
 };
 
-export const usersApi = createApi({
-  reducerPath: "usersApi",
-  baseQuery: fetchBaseQuery({ baseUrl: api }),
-  // to show how many tags exist. v use tags(providesTags(query), invalidatesTags(mutation)) to track changes,
-  // if mutation-request is used then it means that the sever is update and v need to refetch
-  tagTypes: ["Users"],
-  endpoints: (builder) => ({
-    //   there 2 types of requests: query(GET) and mutation(POST, DELETE, PUT, PATCH)
-    getUsers: builder.query<Idata[], string>({
-      // here is query(params)
-      query: (name) => `?name=${name}`,
-      providesTags: ["Users"],
-    }),
-
-    addUser: builder.mutation({
-      query: (obj) => ({
-        url: "/",
-        method: "POST",
-        body: obj,
-      }),
-
-      invalidatesTags: ["Users"],
-    }),
-
-    delUser: builder.mutation<Omit<Idata, "id" | "status">, string>({
-      query: (id) => ({
-        url: `/${id}`,
-        method: "DELETE",
-      }),
-      // track changes
-      invalidatesTags: ["Users"],
-    }),
-
-    editUser: builder.mutation<Omit<Idata, "id" | "status">, Idata>({
-      query: ({ id, ...obj }) => ({
-        url: `/${id}`,
-        method: "PUT",
-        body: obj,
-      }),
-      invalidatesTags: ["Users"],
-    }),
-    // !here search
-  }),
-});
-
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const {
-  useGetUsersQuery,
-  useDelUserMutation,
-  useAddUserMutation,
-  useEditUserMutation,
-} = usersApi;
+export const getById = async (id: string) => {
+  return await axios.get(`/${id}`);
+};

@@ -32,13 +32,10 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 import {
+  delUserData,
   getUserData,
   postUserData,
   putUserData,
-  // useAddUserMutation,
-  // useDelUserMutation,
-  // useEditUserMutation,
-  // useGetUsersQuery,
 } from "@/api/users.api";
 import { Idata } from "@/api/types.api";
 import { SpinnerCom } from "@/components/Loader";
@@ -50,6 +47,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 const formSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -60,6 +58,8 @@ const formSchema = Yup.object({
 
 const Page = () => {
   const queryClient = useQueryClient();
+
+  const navigate = useRouter();
 
   const [inpSearch, setInpSearch] = useState("");
 
@@ -74,8 +74,6 @@ const Page = () => {
       queryClient.invalidateQueries({ queryKey: ["Users"] });
     },
   });
-  // here edit
-
   const putMutation = useMutation({
     mutationFn: (obj: Idata) => putUserData(obj),
     onSuccess: () => {
@@ -83,22 +81,22 @@ const Page = () => {
     },
   });
 
-  // const { data, error, isLoading } = useGetUsersQuery(inpSearch);
-
-  // error2, isLoading2 -> use it if values are identical
-  // const [delData, { error: error2, isLoading: isLoading2 }] =
-  // useDelUserMutation();
-  // const [addUser] = useAddUserMutation();
+  const delMutation = useMutation({
+    mutationFn: (id: string) => delUserData(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Users"] });
+    },
+  });
 
   // Modals state
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [viewModal, setViewModal] = useState(false);
+
+  // here
+  // const [viewModal, setViewModal] = useState(false);
 
   // Selected user for Edit/View
   const [currentUser, setCurrentUser] = useState<Idata | null>(null);
-
-  // const [editUser] = useEditUserMutation();
 
   // Form for Add/Edit
   const {
@@ -120,8 +118,7 @@ const Page = () => {
   // Handle Delete
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this user?")) {
-      // here
-      // delData(id);
+      delMutation.mutate(id);
     }
   };
 
@@ -146,17 +143,21 @@ const Page = () => {
   // Handle Status Toggle (Checked Logic)
   const onStatusToggle = (user: Idata) => {
     const obj = { ...user, status: !user.status };
-    console.log(obj);
 
-    // here
     putMutation.mutate(obj);
   };
 
   // Handle View Details (GetById Design)
-  const handleView = (user: Idata) => {
-    setCurrentUser(user);
-    setViewModal(true);
+  const handleView = (id: string) => {
+    console.log(id);
+
+    navigate.push(`user/${id}`);
   };
+  // here
+  // const handleView = (user: Idata) => {
+  //   setCurrentUser(user);
+  //   setViewModal(true);
+  // };
 
   // Handle Edit Click
   const handleEdit = (user: Idata) => {
@@ -249,7 +250,7 @@ const Page = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-[160px]">
-                          <DropdownMenuItem onClick={() => handleView(e)}>
+                          <DropdownMenuItem onClick={() => handleView(e.id)}>
                             <Eye className="mr-2 h-4 w-4" />
                             View Info
                           </DropdownMenuItem>
@@ -430,7 +431,7 @@ const Page = () => {
       </Dialog>
 
       {/* View User Modal (GetById Design) */}
-      <Dialog open={viewModal} onOpenChange={setViewModal}>
+      {/* <Dialog open={viewModal} onOpenChange={setViewModal}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
             <DialogTitle>User Information</DialogTitle>
@@ -490,7 +491,7 @@ const Page = () => {
             </DialogClose>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };
