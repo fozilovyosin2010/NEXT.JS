@@ -34,6 +34,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   getUserData,
   postUserData,
+  putUserData,
   // useAddUserMutation,
   // useDelUserMutation,
   // useEditUserMutation,
@@ -69,6 +70,14 @@ const Page = () => {
 
   const postMutation = useMutation({
     mutationFn: (obj: Idata) => postUserData(obj),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Users"] });
+    },
+  });
+  // here edit
+
+  const putMutation = useMutation({
+    mutationFn: (obj: Idata) => putUserData(obj),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Users"] });
     },
@@ -127,10 +136,9 @@ const Page = () => {
 
   // Handle Edit Submit (PUT Logic)
   const onEditSubmit = (formData: any) => {
-    // console.log(currentUser?.id, formData);
-    // editUser({ ...formData, id: currentUser?.id });
-    // TODO: Implement putUser mutation and call it here
-    // await updateUser({ id: currentUser.id, ...formData });
+    console.log({ ...formData, id: currentUser?.id });
+
+    putMutation.mutate({ ...formData, id: currentUser?.id });
     setEditModal(false);
     reset();
   };
@@ -138,8 +146,10 @@ const Page = () => {
   // Handle Status Toggle (Checked Logic)
   const onStatusToggle = (user: Idata) => {
     const obj = { ...user, status: !user.status };
+    console.log(obj);
+
     // here
-    // editUser(obj);
+    putMutation.mutate(obj);
   };
 
   // Handle View Details (GetById Design)

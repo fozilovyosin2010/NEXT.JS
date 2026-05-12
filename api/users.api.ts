@@ -1,5 +1,5 @@
+import { Idata } from "@/api/types.api";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Idata } from "./types.api";
 
 import axios from "axios";
 
@@ -14,6 +14,14 @@ export const getUserData = async (q: string = "") => {
 
 export const postUserData = async (obj: Idata) => {
   return await myAxios.post("/", obj);
+};
+
+export const putUserData = async ({ id, ...obj }: Idata) => {
+  return await myAxios.put(`/${id}`, obj);
+};
+
+export const delUserData = async (id: string) => {
+  return await myAxios.delete(`/${id}`);
 };
 
 export const usersApi = createApi({
