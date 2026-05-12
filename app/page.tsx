@@ -92,9 +92,6 @@ const Page = () => {
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
 
-  // here
-  // const [viewModal, setViewModal] = useState(false);
-
   // Selected user for Edit/View
   const [currentUser, setCurrentUser] = useState<Idata | null>(null);
 
