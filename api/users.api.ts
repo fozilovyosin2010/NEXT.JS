@@ -5,9 +5,15 @@ import axios from "axios";
 
 const api = "https://667ab3c9bd627f0dcc90219a.mockapi.io/addTocart";
 
+const myAxios = axios.create({ baseURL: api });
+
 export const getUserData = async (q: string = "") => {
-  const { data } = await axios.get(`${api}?name=${q}`);
+  const { data } = await myAxios.get(`?name=${q.trim()}`);
   return data;
+};
+
+export const postUserData = async (obj: Idata) => {
+  return await myAxios.post("/", obj);
 };
 
 export const usersApi = createApi({

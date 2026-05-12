@@ -33,6 +33,7 @@ import { Switch } from "@/components/ui/switch";
 
 import {
   getUserData,
+  postUserData,
   // useAddUserMutation,
   // useDelUserMutation,
   // useEditUserMutation,
@@ -62,11 +63,16 @@ const Page = () => {
   const [inpSearch, setInpSearch] = useState("");
 
   const { data, isFetching } = useQuery<Idata[]>({
-    queryKey: ["Users"],
+    queryKey: ["Users", inpSearch],
     queryFn: () => getUserData(inpSearch),
   });
 
-  const mutation = useMutation({});
+  const postMutation = useMutation({
+    mutationFn: (obj: Idata) => postUserData(obj),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Users"] });
+    },
+  });
 
   // const { data, error, isLoading } = useGetUsersQuery(inpSearch);
 
@@ -112,9 +118,11 @@ const Page = () => {
 
   // Handle Add Submit
   const onAddSubmit = (formData: any) => {
-    addUser({ ...formData, status: false });
-    setAddModal(false);
-    reset();
+    console.log(formData);
+
+    // use "mutate" for passing arg to UseMutation
+    postMutation.mutate({ ...formData, status: false });
+    // setAddModal(false);
   };
 
   // Handle Edit Submit (PUT Logic)
