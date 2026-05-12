@@ -25,5 +25,6 @@ export const delUserData = async (id: string) => {
 };
 
 export const getById = async (id: string) => {
-  return await axios.get(`/${id}`);
+  const { data } = await myAxios.get(`/${id}`);
+  return data;
 };
