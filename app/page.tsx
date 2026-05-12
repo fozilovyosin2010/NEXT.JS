@@ -44,9 +44,10 @@ import { SpinnerCom } from "@/components/Loader";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+
 import { useState } from "react";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const formSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -56,13 +57,16 @@ const formSchema = Yup.object({
 });
 
 const Page = () => {
+  const queryClient = useQueryClient();
+
   const [inpSearch, setInpSearch] = useState("");
 
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery<Idata[]>({
     queryKey: ["Users"],
-    queryFn: getUserData,
+    queryFn: () => getUserData(inpSearch),
   });
-  console.log(data);
+
+  const mutation = useMutation({});
 
   // const { data, error, isLoading } = useGetUsersQuery(inpSearch);
 
@@ -252,18 +256,17 @@ const Page = () => {
             </TableBody>
           </Table>
 
-          {/* here */}
-          {/* {isLoading && (
+          {isFetching && (
             <div className="flex justify-center p-12">
               <SpinnerCom />
             </div>
           )}
 
-          {!isLoading && data?.length === 0 && (
+          {!isFetching && data?.length === 0 && (
             <div className="text-center p-12 text-muted-foreground">
               No users found.
             </div>
-          )} */}
+          )}
         </div>
       </div>
 
