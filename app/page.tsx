@@ -33,11 +33,12 @@ import { Switch } from "@/components/ui/switch";
 
 import {
   delUserData,
-  getUserData,
-  postUserData,
+  // getUserData,
+  // postUserData,
   putUserData,
   usegetUserDataQuery,
   usePostUserDataMutation,
+  usePutUserDataMutation,
 } from "@/api/users.api";
 import { Idata } from "@/api/types.api";
 import { SpinnerCom } from "@/components/Loader";
@@ -67,25 +68,15 @@ const Page = () => {
 
   const { data, isFetching } = usegetUserDataQuery(inpSearch);
 
-  // const { data, isFetching } = useQuery<Idata[]>({
-  //   queryKey: ["Users", inpSearch],
-  //   queryFn: () => getUserData(inpSearch),
-  // });
-
   const { mutate: postMutate } = usePostUserDataMutation();
+  const { mutate: putMutate } = usePutUserDataMutation();
 
-  // const postMutation = useMutation({
-  //   mutationFn: (obj: Idata) => postUserData(obj),
+  // const putMutation = useMutation({
+  //   mutationFn: (obj: Idata) => putUserData(obj),
   //   onSuccess: () => {
   //     queryClient.invalidateQueries({ queryKey: ["Users"] });
   //   },
   // });
-  const putMutation = useMutation({
-    mutationFn: (obj: Idata) => putUserData(obj),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Users"] });
-    },
-  });
 
   const delMutation = useMutation({
     mutationFn: (id: string) => delUserData(id),
@@ -139,7 +130,7 @@ const Page = () => {
   const onEditSubmit = (formData: any) => {
     console.log({ ...formData, id: currentUser?.id });
 
-    putMutation.mutate({ ...formData, id: currentUser?.id });
+    putMutate({ ...formData, id: currentUser?.id });
     setEditModal(false);
     reset();
   };
@@ -148,7 +139,7 @@ const Page = () => {
   const onStatusToggle = (user: Idata) => {
     const obj = { ...user, status: !user.status };
 
-    putMutation.mutate(obj);
+    putMutate(obj);
   };
 
   // Handle View Details (GetById Design)

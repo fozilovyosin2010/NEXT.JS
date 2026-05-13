@@ -25,6 +25,16 @@ export const usePostUserDataMutation = () => {
     },
   });
 };
+export const usePutUserDataMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (obj: Idata) => putUserData(obj),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Users"] });
+    },
+  });
+};
 export const getUserData = async (q: string = "") => {
   const { data } = await myAxios.get(`?name=${q.trim()}`);
   return data;
