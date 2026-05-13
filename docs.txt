@@ -1,0 +1,575 @@
+# TanStack Query Complete Guide
+
+## What is TanStack Query?
+
+TanStack Query (previously React Query) is a library for:
+
+- fetching server data
+- caching it
+- synchronizing UI with backend
+- handling loading/errors
+- refetching automatically
+
+It helps manage SERVER STATE.
+
+---
+
+# UI State vs Server State
+
+## UI State
+
+Frontend-only state:
+
+```js
+isModalOpen;
+theme;
+inputValue;
+```
+
+Managed by:
+
+- useState
+- Context
+- Redux/Zustand
+
+---
+
+## Server State
+
+Data from backend:
+
+```js
+users;
+posts;
+products;
+```
+
+This data:
+
+- changes over time
+- can become outdated
+- needs synchronization
+
+TanStack Query manages this.
+
+---
+
+# Why TanStack Query Exists
+
+Without it:
+
+```jsx
+const [data, setData] = useState([]);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState(null);
+```
+
+You repeat this logic everywhere.
+
+TanStack Query automates it.
+
+---
+
+# Main Features
+
+- caching
+- retries
+- background refetching
+- pagination
+- infinite scroll
+- mutations
+- optimistic updates
+- devtools
+
+---
+
+# Core Concepts
+
+1. QueryClient
+2. QueryClientProvider
+3. useQuery
+4. queryKey
+5. queryFn
+6. useMutation
+7. invalidateQueries
+
+---
+
+# Installation
+
+```bash
+npm install @tanstack/react-query
+```
+
+---
+
+# Setup
+
+## main.jsx
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import App from "./App";
+
+const queryClient = new QueryClient();
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <QueryClientProvider client={queryClient}>
+    <App />
+  </QueryClientProvider>,
+);
+```
+
+---
+
+# How It Works
+
+```text
+Component
+   ↓
+useQuery()
+   ↓
+QueryClient
+   ↓
+Cache
+   ↓
+Server/API
+```
+
+---
+
+# useQuery
+
+Used for GET requests.
+
+```jsx
+useQuery({
+  queryKey: ["users"],
+  queryFn: fetchUsers,
+});
+```
+
+---
+
+# Example
+
+## API function
+
+```js
+const fetchUsers = async () => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/users");
+
+  return res.json();
+};
+```
+
+## Component
+
+```jsx
+import { useQuery } from "@tanstack/react-query";
+
+function Users() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["users"],
+    queryFn: fetchUsers,
+  });
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (error) {
+    return <h1>Error...</h1>;
+  }
+
+  return (
+    <div>
+      {data.map((user) => (
+        <p key={user.id}>{user.name}</p>
+      ))}
+    </div>
+  );
+}
+```
+
+---
+
+# queryKey
+
+Unique identifier for cache.
+
+```js
+queryKey: ["users"];
+```
+
+Dynamic example:
+
+```js
+queryKey: ["user", id];
+```
+
+Cache example:
+
+```text
+["users"]
+["user", 1]
+["user", 2]
+```
+
+---
+
+# Cache System
+
+First request:
+
+```text
+Server → Cache
+```
+
+Second request:
+
+```text
+Cache → Component
+```
+
+Much faster.
+
+---
+
+# staleTime
+
+Controls freshness.
+
+```jsx
+useQuery({
+  queryKey: ["users"],
+  queryFn: fetchUsers,
+  staleTime: 5000,
+});
+```
+
+---
+
+# useMutation
+
+Used for:
+
+- POST
+- PUT
+- PATCH
+- DELETE
+
+---
+
+# Mutation Example
+
+```js
+const createUser = async (newUser) => {
+  const res = await fetch("/api/users", {
+    method: "POST",
+    body: JSON.stringify(newUser),
+  });
+
+  return res.json();
+};
+```
+
+```jsx
+import { useMutation } from "@tanstack/react-query";
+
+function AddUser() {
+  const mutation = useMutation({
+    mutationFn: createUser,
+  });
+
+  return (
+    <button
+      onClick={() =>
+        mutation.mutate({
+          name: "John",
+        })
+      }
+    >
+      Add User
+    </button>
+  );
+}
+```
+
+---
+
+# invalidateQueries
+
+After mutation, refetch old cache.
+
+```js
+queryClient.invalidateQueries({
+  queryKey: ["users"],
+});
+```
+
+Flow:
+
+```text
+POST user
+   ↓
+invalidate cache
+   ↓
+refetch query
+   ↓
+UI updates
+```
+
+---
+
+# Important States
+
+## useQuery
+
+```js
+isLoading;
+isFetching;
+isError;
+isSuccess;
+```
+
+---
+
+# isLoading vs isFetching
+
+## isLoading
+
+Only first fetch.
+
+## isFetching
+
+Any fetching, including background refetch.
+
+---
+
+# Pagination
+
+```jsx
+useQuery({
+  queryKey: ["posts", page],
+  queryFn: () => fetchPosts(page),
+});
+```
+
+Each page gets separate cache.
+
+---
+
+# Infinite Scroll
+
+```js
+useInfiniteQuery();
+```
+
+Used for:
+
+- feeds
+- social apps
+- endless scrolling
+
+---
+
+# Devtools
+
+Install:
+
+```bash
+npm install @tanstack/react-query-devtools
+```
+
+Usage:
+
+```jsx
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+<ReactQueryDevtools />;
+```
+
+---
+
+# Best Practices
+
+## 1. Use good query keys
+
+BAD:
+
+```js
+["data"];
+```
+
+GOOD:
+
+```js
+["users"][("user", id)][("posts", page)];
+```
+
+---
+
+## 2. Separate API functions
+
+BAD:
+
+```jsx
+queryFn: async () => {};
+```
+
+GOOD:
+
+```js
+const getUsers = async () => {};
+```
+
+---
+
+## 3. Use custom hooks
+
+```js
+function useUsers() {
+  return useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+  });
+}
+```
+
+---
+
+## 4. Tune staleTime correctly
+
+Products:
+
+```js
+staleTime: 1000 * 60 * 5;
+```
+
+Chat:
+
+```js
+staleTime: 0;
+```
+
+---
+
+## 5. Use mutations only for changing data
+
+GET:
+
+```js
+useQuery;
+```
+
+POST/PUT/DELETE:
+
+```js
+useMutation;
+```
+
+---
+
+# Common Mistakes
+
+## 1. Bad query keys
+
+BAD:
+
+```js
+["user"];
+```
+
+for every user.
+
+---
+
+## 2. Forgetting invalidation
+
+UI becomes outdated.
+
+---
+
+## 3. Using TanStack Query for UI state
+
+Do NOT use for:
+
+- modals
+- themes
+- inputs
+
+---
+
+# Pluses
+
+- less boilerplate
+- automatic caching
+- better UX
+- background sync
+- retries
+- powerful mutations
+
+---
+
+# Minuses
+
+- learning curve
+- cache debugging can confuse beginners
+- overkill for tiny apps
+
+---
+
+# TanStack Query vs Redux
+
+| Redux              | TanStack Query     |
+| ------------------ | ------------------ |
+| client state       | server state       |
+| manual async logic | automatic fetching |
+| more boilerplate   | less boilerplate   |
+
+Usually:
+
+- Redux/Zustand → UI state
+- TanStack Query → server state
+
+---
+
+# Suggested Architecture
+
+```text
+src/
+ ├── api/
+ │    └── users.js
+ │
+ ├── hooks/
+ │    └── useUsers.js
+ │
+ ├── pages/
+ │    └── UsersPage.jsx
+ │
+ └── main.jsx
+```
+
+---
+
+# Final Mental Model
+
+TanStack Query is:
+
+```text
+A smart async state manager
+for server data.
+```
+
+It:
+
+- fetches
+- caches
+- synchronizes
+- refetches
+- updates UI automatically

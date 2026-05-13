@@ -36,6 +36,8 @@ import {
   getUserData,
   postUserData,
   putUserData,
+  usegetUserDataQuery,
+  usePostUserDataMutation,
 } from "@/api/users.api";
 import { Idata } from "@/api/types.api";
 import { SpinnerCom } from "@/components/Loader";
@@ -63,17 +65,21 @@ const Page = () => {
 
   const [inpSearch, setInpSearch] = useState("");
 
-  const { data, isFetching } = useQuery<Idata[]>({
-    queryKey: ["Users", inpSearch],
-    queryFn: () => getUserData(inpSearch),
-  });
+  const { data, isFetching } = usegetUserDataQuery(inpSearch);
 
-  const postMutation = useMutation({
-    mutationFn: (obj: Idata) => postUserData(obj),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Users"] });
-    },
-  });
+  // const { data, isFetching } = useQuery<Idata[]>({
+  //   queryKey: ["Users", inpSearch],
+  //   queryFn: () => getUserData(inpSearch),
+  // });
+
+  const { mutate: postMutate } = usePostUserDataMutation();
+
+  // const postMutation = useMutation({
+  //   mutationFn: (obj: Idata) => postUserData(obj),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["Users"] });
+  //   },
+  // });
   const putMutation = useMutation({
     mutationFn: (obj: Idata) => putUserData(obj),
     onSuccess: () => {
@@ -124,7 +130,8 @@ const Page = () => {
     console.log(formData);
 
     // use "mutate" for passing arg to UseMutation
-    postMutation.mutate({ ...formData, status: false });
+    postMutate({ ...formData, status: false });
+    // postMutation.mutate({ ...formData, status: false });
     setAddModal(false);
   };
 
