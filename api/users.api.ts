@@ -25,6 +25,7 @@ export const usePostUserDataMutation = () => {
     },
   });
 };
+
 export const usePutUserDataMutation = () => {
   const queryClient = useQueryClient();
 
@@ -35,6 +36,25 @@ export const usePutUserDataMutation = () => {
     },
   });
 };
+
+export const usedelUserDataMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => delUserData(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Users"] });
+    },
+  });
+};
+export const usegetByIdQuery = (id: string) => {
+  return useQuery<Idata>({
+    queryKey: ["user", id],
+    queryFn: () => getById(id as string),
+    enabled: !!id,
+  });
+};
+
 export const getUserData = async (q: string = "") => {
   const { data } = await myAxios.get(`?name=${q.trim()}`);
   return data;

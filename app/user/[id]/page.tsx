@@ -1,6 +1,6 @@
 "use client";
 
-import { getById } from "@/api/users.api";
+import { getById, usegetByIdQuery } from "@/api/users.api";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -19,11 +19,7 @@ const UserById = () => {
   const { id } = useParams();
   const router = useRouter();
 
-  const { data, isLoading, isError } = useQuery<Idata>({
-    queryKey: ["user", id],
-    queryFn: () => getById(id as string),
-    enabled: !!id,
-  });
+  const { data, isLoading, isError } = usegetByIdQuery(id as string);
 
   if (isLoading) {
     return (

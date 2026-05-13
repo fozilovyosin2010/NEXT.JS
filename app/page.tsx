@@ -36,6 +36,7 @@ import {
   // getUserData,
   // postUserData,
   putUserData,
+  usedelUserDataMutation,
   usegetUserDataQuery,
   usePostUserDataMutation,
   usePutUserDataMutation,
@@ -70,20 +71,7 @@ const Page = () => {
 
   const { mutate: postMutate } = usePostUserDataMutation();
   const { mutate: putMutate } = usePutUserDataMutation();
-
-  // const putMutation = useMutation({
-  //   mutationFn: (obj: Idata) => putUserData(obj),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["Users"] });
-  //   },
-  // });
-
-  const delMutation = useMutation({
-    mutationFn: (id: string) => delUserData(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Users"] });
-    },
-  });
+  const { mutate: delMutate } = usedelUserDataMutation();
 
   // Modals state
   const [addModal, setAddModal] = useState(false);
@@ -112,7 +100,7 @@ const Page = () => {
   // Handle Delete
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this user?")) {
-      delMutation.mutate(id);
+      delMutate(id);
     }
   };
 
