@@ -13,7 +13,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { SpinnerCom } from "@/components/Loader";
-import { Idata } from "@/api/types.api";
 
 const UserById = () => {
   const { id } = useParams();
