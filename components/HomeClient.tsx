@@ -64,7 +64,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
   // We use initialData to prevent the "loading flash" on first mount
   const { data, isFetching } = usegetUserDataQuery(inpSearch);
-  
+
   // Use server data if client data hasn't arrived yet
   const users = data || initialData;
 
@@ -192,7 +192,11 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-gray-100">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 hover:bg-gray-100"
+                        >
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -204,7 +208,10 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                           <Pencil className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleDelete(e.id)} className="text-red-600">
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(e.id)}
+                          className="text-red-600"
+                        >
                           <Trash className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -235,32 +242,65 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           <form onSubmit={handleSubmit(onAddSubmit)}>
             <DialogHeader>
               <DialogTitle>Add New User</DialogTitle>
-              <DialogDescription>Fill in the details to create a new user profile.</DialogDescription>
+              <DialogDescription>
+                Fill in the details to create a new user profile.
+              </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label htmlFor="add-name">Name</Label>
-                <Input id="add-name" {...register("name")} placeholder="John Doe" />
-                {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+                <Input
+                  id="add-name"
+                  {...register("name")}
+                  placeholder="John Doe"
+                />
+                {errors.name && (
+                  <p className="text-xs text-red-500">{errors.name.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="add-city">City</Label>
-                <Input id="add-city" {...register("city")} placeholder="New York" />
-                {errors.city && <p className="text-xs text-red-500">{errors.city.message}</p>}
+                <Input
+                  id="add-city"
+                  {...register("city")}
+                  placeholder="New York"
+                />
+                {errors.city && (
+                  <p className="text-xs text-red-500">{errors.city.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="add-job">Job</Label>
-                <Input id="add-job" {...register("job")} placeholder="Developer" />
-                {errors.job && <p className="text-xs text-red-500">{errors.job.message}</p>}
+                <Input
+                  id="add-job"
+                  {...register("job")}
+                  placeholder="Developer"
+                />
+                {errors.job && (
+                  <p className="text-xs text-red-500">{errors.job.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="add-age">Age</Label>
-                <Input id="add-age" type="number" {...register("age")} placeholder="25" />
-                {errors.age && <p className="text-xs text-red-500">{errors.age.message}</p>}
+                <Input
+                  id="add-age"
+                  type="number"
+                  {...register("age")}
+                  placeholder="25"
+                />
+                {errors.age && (
+                  <p className="text-xs text-red-500">{errors.age.message}</p>
+                )}
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setAddModal(false)}>Cancel</Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setAddModal(false)}
+              >
+                Cancel
+              </Button>
               <Button type="submit">Create User</Button>
             </DialogFooter>
           </form>
@@ -273,32 +313,48 @@ export default function HomeClient({ initialData }: HomeClientProps) {
           <form onSubmit={handleSubmit(onEditSubmit)}>
             <DialogHeader>
               <DialogTitle>Edit User</DialogTitle>
-              <DialogDescription>Update the user profile information.</DialogDescription>
+              <DialogDescription>
+                Update the user profile information.
+              </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label htmlFor="edit-name">Name</Label>
                 <Input id="edit-name" {...register("name")} />
-                {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="text-xs text-red-500">{errors.name.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="edit-city">City</Label>
                 <Input id="edit-city" {...register("city")} />
-                {errors.city && <p className="text-xs text-red-500">{errors.city.message}</p>}
+                {errors.city && (
+                  <p className="text-xs text-red-500">{errors.city.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="edit-job">Job</Label>
                 <Input id="edit-job" {...register("job")} />
-                {errors.job && <p className="text-xs text-red-500">{errors.job.message}</p>}
+                {errors.job && (
+                  <p className="text-xs text-red-500">{errors.job.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="edit-age">Age</Label>
                 <Input id="edit-age" type="number" {...register("age")} />
-                {errors.age && <p className="text-xs text-red-500">{errors.age.message}</p>}
+                {errors.age && (
+                  <p className="text-xs text-red-500">{errors.age.message}</p>
+                )}
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setEditModal(false)}>Cancel</Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditModal(false)}
+              >
+                Cancel
+              </Button>
               <Button type="submit">Save Changes</Button>
             </DialogFooter>
           </form>
