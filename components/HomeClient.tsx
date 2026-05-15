@@ -31,6 +31,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 import {
+  postUserData,
   usedelUserDataMutation,
   usegetUserDataQuery,
   usePostUserDataMutation,
@@ -44,9 +45,9 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { delData } from "@/actions/action";
+import { delData, postData, putData } from "@/actions/action";
 
 const formSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -60,6 +61,7 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ initialData }: HomeClientProps) {
+  const [isPending, startTransition] = useTransition();
   const navigate = useRouter();
   const [inpSearch, setInpSearch] = useState("");
 
@@ -68,10 +70,6 @@ export default function HomeClient({ initialData }: HomeClientProps) {
 
   // Use server data if client data hasn't arrived yet
   const users = initialData;
-
-  const { mutate: postMutate } = usePostUserDataMutation();
-  const { mutate: putMutate } = usePutUserDataMutation();
-  const { mutate: delMutate } = usedelUserDataMutation();
 
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -93,25 +91,22 @@ export default function HomeClient({ initialData }: HomeClientProps) {
     },
   });
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this user?")) {
-      delMutate(id);
-    }
-  };
-
-  const onAddSubmit = (formData: any) => {
-    postMutate({ ...formData, status: false });
+  const onAddSubmit = async (formData: any) => {
     setAddModal(false);
+    await postData(formData);
   };
 
-  const onEditSubmit = (formData: any) => {
-    putMutate({ ...formData, id: currentUser?.id });
+  const onEditSubmit = async (formData: any) => {
+    // here
+    // putMutate({ ...formData, id: currentUser?.id });
+
     setEditModal(false);
+    await putData({ ...formData, id: currentUser?.id });
     reset();
   };
 
-  const onStatusToggle = (user: Idata) => {
-    putMutate({ ...user, status: !user.status });
+  const onStatusToggle = async (user: Idata) => {
+    await putData({ ...user, status: !user.status });
   };
 
   const handleView = (id: string) => {
@@ -151,7 +146,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                 reset();
                 setAddModal(true);
               }}
-              className="shadow-sm"
+              className="shadow-sm "
             >
               Add User
             </Button>
@@ -182,6 +177,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                       <Switch
                         checked={e.status}
                         onCheckedChange={() => onStatusToggle(e)}
+                        disabled={isPending}
                       />
                       <span
                         className={`text-xs font-semibold px-2 py-1 rounded-full ${e.status ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
@@ -209,14 +205,21 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                           <Pencil className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          {/* here */}
+                        <DropdownMenuItem
+                          onSelect={(e) => e.preventDefault()}
+                          disabled={isPending}
+                        >
                           <form
-                            action={delData.bind(null, e.id)}
-                            className="text-red-600 w-full "
+                            action={() => {
+                              startTransition(async () => {
+                                await delData(e.id);
+                              });
+                            }}
+                            className="text-red-600 w-full"
                           >
-                            <button className="flex gap-3">
-                              <Trash className="mr-2 h-4 w-4" /> Delete
+                            <button className="flex w-full items-center gap-3 disabled:opacity-50">
+                              <Trash className="mr-2 h-4 w-4" />
+                              {isPending ? "Deleting..." : "Delete"}
                             </button>
                           </form>
                         </DropdownMenuItem>
@@ -228,18 +231,17 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             </TableBody>
           </Table>
 
-          {/* here */}
-          {/* {isFetching && (
-            <div className="flex justify-center p-12">
+          {isPending && (
+            <div className="flex justify-center p-12 border-t">
               <SpinnerCom />
             </div>
           )}
 
-          {!isFetching && users?.length === 0 && (
-            <div className="text-center p-12 text-muted-foreground">
+          {!isPending && users?.length === 0 && (
+            <div className="text-center p-12 text-muted-foreground border-t">
               No users found.
             </div>
-          )} */}
+          )}
         </div>
       </div>
 
@@ -304,11 +306,14 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               <Button
                 type="button"
                 variant="outline"
+                disabled={isPending}
                 onClick={() => setAddModal(false)}
               >
                 Cancel
               </Button>
-              <Button type="submit">Create User</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Creating..." : "Create User"}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -358,11 +363,14 @@ export default function HomeClient({ initialData }: HomeClientProps) {
               <Button
                 type="button"
                 variant="outline"
+                disabled={isPending}
                 onClick={() => setEditModal(false)}
               >
                 Cancel
               </Button>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Saving..." : "Save Changes"}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
