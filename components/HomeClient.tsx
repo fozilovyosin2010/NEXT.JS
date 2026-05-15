@@ -46,6 +46,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { delData } from "@/actions/action";
 
 const formSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -63,10 +64,10 @@ export default function HomeClient({ initialData }: HomeClientProps) {
   const [inpSearch, setInpSearch] = useState("");
 
   // We use initialData to prevent the "loading flash" on first mount
-  const { data, isFetching } = usegetUserDataQuery(inpSearch);
+  // const { data, isFetching } = usegetUserDataQuery(inpSearch);
 
   // Use server data if client data hasn't arrived yet
-  const users = data || initialData;
+  const users = initialData;
 
   const { mutate: postMutate } = usePostUserDataMutation();
   const { mutate: putMutate } = usePutUserDataMutation();
@@ -208,11 +209,16 @@ export default function HomeClient({ initialData }: HomeClientProps) {
                           <Pencil className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleDelete(e.id)}
-                          className="text-red-600"
-                        >
-                          <Trash className="mr-2 h-4 w-4" /> Delete
+                        <DropdownMenuItem>
+                          {/* here */}
+                          <form
+                            action={delData.bind(null, e.id)}
+                            className="text-red-600 w-full "
+                          >
+                            <button className="flex gap-3">
+                              <Trash className="mr-2 h-4 w-4" /> Delete
+                            </button>
+                          </form>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -222,7 +228,8 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             </TableBody>
           </Table>
 
-          {isFetching && (
+          {/* here */}
+          {/* {isFetching && (
             <div className="flex justify-center p-12">
               <SpinnerCom />
             </div>
@@ -232,7 +239,7 @@ export default function HomeClient({ initialData }: HomeClientProps) {
             <div className="text-center p-12 text-muted-foreground">
               No users found.
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
