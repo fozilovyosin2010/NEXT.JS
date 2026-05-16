@@ -1,16 +1,20 @@
-import { getUserData } from "@/api/users.api";
+import { prisma } from "@/lib/prisma";
 import HomeClient from "@/components/HomeClient";
+import { Idata } from "@/api/types.api";
 
 export default async function Page() {
-  let initialData = [];
+  let initialData: any = [];
 
   try {
-    // This happens on the SERVER before the page is sent to the browser
-    initialData = await getUserData("");
+    // Reading DIRECTLY from the database
+    initialData = await prisma.user.findMany({
+      orderBy: {
+        id: "desc", // Show newest users first
+      },
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching users from DB:", error);
   }
 
-  // We pass the data to the Client Component
   return <HomeClient initialData={initialData} />;
 }

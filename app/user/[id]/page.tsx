@@ -1,4 +1,4 @@
-import { getById } from "@/api/users.api";
+import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -15,9 +15,11 @@ export default async function UserById({ params }: { params: { id: string } }) {
   let data = null;
 
   try {
-    data = await getById(id);
+    data = await prisma.user.findUnique({
+      where: { id },
+    });
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching user from DB:", error);
   }
 
   // Handle case where user is not found

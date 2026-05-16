@@ -1,0 +1,20 @@
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = global as unknown as {
+  prisma: PrismaClient;
+};
+
+// We pass the datasource explicitly to satisfy the "non-empty options" requirement in Prisma 7
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL || "file:./dev.db",
+      },
+    },
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}

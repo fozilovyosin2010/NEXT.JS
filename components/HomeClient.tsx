@@ -30,13 +30,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
-import {
-  postUserData,
-  usedelUserDataMutation,
-  usegetUserDataQuery,
-  usePostUserDataMutation,
-  usePutUserDataMutation,
-} from "@/api/users.api";
+// import {
+//   postUserData,
+//   usedelUserDataMutation,
+//   usegetUserDataQuery,
+//   usePostUserDataMutation,
+//   usePutUserDataMutation,
+// } from "@/api/users.api";
 
 import { Idata } from "@/api/types.api";
 import { SpinnerCom } from "@/components/Loader";
@@ -61,6 +61,7 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ initialData }: HomeClientProps) {
+  // here add/edit
   const [isPending, startTransition] = useTransition();
   const navigate = useRouter();
   const [inpSearch, setInpSearch] = useState("");
