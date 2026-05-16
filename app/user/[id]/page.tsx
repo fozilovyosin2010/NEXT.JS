@@ -9,6 +9,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+// here
 
 export default async function UserById({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -27,7 +28,9 @@ export default async function UserById({ params }: { params: { id: string } }) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50/50 space-y-4">
         <div className="bg-white p-8 rounded-2xl shadow-sm border text-center max-w-sm w-full">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">User Not Found</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
+            User Not Found
+          </h2>
           <p className="text-muted-foreground mb-6 text-sm">
             We couldn't find the user you're looking for.
           </p>
@@ -118,7 +121,9 @@ export default async function UserById({ params }: { params: { id: string } }) {
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Current Age
                   </p>
-                  <p className="font-medium text-gray-900">{data.age} years old</p>
+                  <p className="font-medium text-gray-900">
+                    {data.age} years old
+                  </p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -149,7 +154,9 @@ export default async function UserById({ params }: { params: { id: string } }) {
                 </div>
                 <div className="flex justify-between">
                   <span>Account Status:</span>
-                  <span className={data.status ? "text-green-600" : "text-gray-600"}>
+                  <span
+                    className={data.status ? "text-green-600" : "text-gray-600"}
+                  >
                     {data.status ? "Verified" : "Pending"}
                   </span>
                 </div>
@@ -171,7 +178,9 @@ export default async function UserById({ params }: { params: { id: string } }) {
                     <p className="text-xs text-muted-foreground font-medium uppercase">
                       Role
                     </p>
-                    <p className="text-sm font-semibold text-gray-900">{data.job}</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {data.job}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -180,7 +189,8 @@ export default async function UserById({ params }: { params: { id: string } }) {
             <div className="bg-blue-600 p-6 rounded-xl shadow-md text-white">
               <h3 className="font-bold mb-2">Need to update info?</h3>
               <p className="text-blue-100 text-xs mb-4 leading-relaxed">
-                You can modify this user's details directly from the management table.
+                You can modify this user's details directly from the management
+                table.
               </p>
               <Link href="/">
                 <Button
