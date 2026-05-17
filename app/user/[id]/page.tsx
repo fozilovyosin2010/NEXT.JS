@@ -1,8 +1,6 @@
-"use client";
-
-import { getById, usegetByIdQuery } from "@/api/users.api";
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+// import { getById, usegetByIdQuery } from "@/api/users.api";
+// import { useQuery } from "@tanstack/react-query";
+// import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
@@ -14,58 +12,78 @@ import {
 } from "lucide-react";
 import { SpinnerCom } from "@/components/Loader";
 import { Idata } from "@/api/types.api";
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
-const UserById = () => {
-  const { id } = useParams();
-  const router = useRouter();
+const UserById = async ({ params }: { params: { id: string } }) => {
+  const { id } = await params;
 
-  const { data, isLoading, isError } = usegetByIdQuery(id as string);
+  const getById = async () => {
+    try {
+      const data = await prisma.user.findUnique({ where: { id } });
+      console.log(data);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50/50">
-        <SpinnerCom />
-      </div>
-    );
-  }
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  if (isError || !data) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50/50 space-y-4">
-        <div className="bg-white p-8 rounded-2xl shadow-sm border text-center max-w-sm w-full">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
-            User Not Found
-          </h2>
-          <p className="text-muted-foreground mb-6 text-sm">
-            We couldn't find the user you're looking for. They may have been
-            deleted or the ID is incorrect.
-          </p>
-          <Button
-            variant="default"
-            onClick={() => router.push("/")}
-            className="w-full"
-          >
-            Return to Dashboard
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const data = (await getById()) as Idata;
+
+  console.log(data);
+
+  // const router = useRouter();
+
+  // const { data, isLoading, isError } = usegetByIdQuery(id as string);
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center bg-gray-50/50">
+  //       <SpinnerCom />
+  //     </div>
+  //   );
+  // }
+
+  // if (isError || !data) {
+  //   return (
+  //     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50/50 space-y-4">
+  //       <div className="bg-white p-8 rounded-2xl shadow-sm border text-center max-w-sm w-full">
+  //         <h2 className="text-xl font-bold text-gray-900 mb-2">
+  //           User Not Found
+  //         </h2>
+  //         <p className="text-muted-foreground mb-6 text-sm">
+  //           We couldn't find the user you're looking for. They may have been
+  //           deleted or the ID is incorrect.
+  //         </p>
+  //         <Button
+  //           variant="default"
+  //           onClick={() => router.push("/")}
+  //           className="w-full"
+  //         >
+  //           Return to Dashboard
+  //         </Button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
         {/* Navigation & Actions */}
         <div className="flex justify-between items-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="text-muted-foreground hover:text-foreground hover:bg-white border-transparent hover:border-gray-200 border transition-all"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to User List
-          </Button>
+          <Link href={"/"}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground hover:bg-white border-transparent hover:border-gray-200 border transition-all"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to User List
+            </Button>
+          </Link>
+
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="bg-white">
               <ExternalLink className="mr-2 h-4 w-4" />
@@ -203,14 +221,15 @@ const UserById = () => {
                 You can modify this user's details directly from the management
                 table.
               </p>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => router.push("/")}
-                className="w-full bg-white text-blue-600 hover:bg-blue-50 border-none"
-              >
-                Go to Table
-              </Button>
+              <Link href={"/"}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="w-full bg-white text-blue-600 hover:bg-blue-50 border-none"
+                >
+                  Go to Table
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
