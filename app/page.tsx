@@ -193,12 +193,6 @@ const page = () => {
 
   return (
     <div>
-      <header className="border-b border-b-blue-500 pb-5">
-        <input className="border" placeholder="Input" type="text" />
-        <button onClick={openAddModal} className="border">
-          Add
-        </button>
-      </header>
       <main className="mt-3 m-5">
         <Table className="">
           <TableHeader>
