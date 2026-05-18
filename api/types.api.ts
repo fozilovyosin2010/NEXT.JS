@@ -1,5 +1,5 @@
 export interface Idata {
-  id: string;
+  id?: string;
   name: string;
   city: string;
   job: string;

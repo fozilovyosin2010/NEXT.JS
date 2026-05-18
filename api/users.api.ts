@@ -1,58 +1,29 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import axios, { create } from "axios";
 import { Idata } from "./types.api";
+export const api = "https://667ab3c9bd627f0dcc90219a.mockapi.io/addTocart";
 
-const api = "https://667ab3c9bd627f0dcc90219a.mockapi.io/addTocart";
-
-export const usersApi = createApi({
-  reducerPath: "usersApi",
-  baseQuery: fetchBaseQuery({ baseUrl: api }),
-  // to show how many tags exist. v use tags(providesTags(query), invalidatesTags(mutation)) to track changes,
-  // if mutation-request is used then it means that the sever is update and v need to refetch
-  tagTypes: ["Users"],
-  endpoints: (builder) => ({
-    //   there 2 types of requests: query(GET) and mutation(POST, DELETE, PUT, PATCH)
-    getUsers: builder.query<Idata[], string>({
-      // here is query(params)
-      query: (name) => `?name=${name}`,
-      providesTags: ["Users"],
-    }),
-
-    addUser: builder.mutation({
-      query: (obj) => ({
-        url: "/",
-        method: "POST",
-        body: obj,
-      }),
-
-      invalidatesTags: ["Users"],
-    }),
-
-    delUser: builder.mutation<Omit<Idata, "id" | "status">, string>({
-      query: (id) => ({
-        url: `/${id}`,
-        method: "DELETE",
-      }),
-      // track changes
-      invalidatesTags: ["Users"],
-    }),
-
-    editUser: builder.mutation<Omit<Idata, "id" | "status">, Idata>({
-      query: ({ id, ...obj }) => ({
-        url: `/${id}`,
-        method: "PUT",
-        body: obj,
-      }),
-      invalidatesTags: ["Users"],
-    }),
-    // !here search
-  }),
+export const myAxios = create({
+  baseURL: api,
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const {
-  useGetUsersQuery,
-  useDelUserMutation,
-  useAddUserMutation,
-  useEditUserMutation,
-} = usersApi;
+export async function getUserById(id: string) {
+  const { data } = await myAxios.get(`/${id}`);
+  return data;
+}
+
+export async function getUsersData() {
+  const { data } = await myAxios.get("/");
+  return data;
+}
+
+export async function delUsersData(id: string) {
+  return await myAxios.delete(`/${id}`);
+}
+
+export async function postUsersData(obj: Idata) {
+  await myAxios.post("/", obj);
+}
+
+export async function putUsersData(obj: Idata) {
+  await myAxios.put(`/${obj.id}`, obj);
+}
