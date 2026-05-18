@@ -7,7 +7,12 @@ import {
   postUsersData,
   putUsersData,
 } from "@/api/users.api";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { MoreHorizontalIcon } from "lucide-react";
 
@@ -48,7 +53,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const page = () => {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const zodSchema = z.object({
     id: z.string().optional(),
@@ -193,6 +198,14 @@ const page = () => {
 
   return (
     <div>
+      <header className="border-b border-b-blue-500 pb-5 p-4">
+        <button
+          onClick={openAddModal}
+          className="border p-2 bg-blue-500 text-[#fff] rounded-md"
+        >
+          Add
+        </button>
+      </header>
       <main className="mt-3 m-5">
         <Table className="">
           <TableHeader>
