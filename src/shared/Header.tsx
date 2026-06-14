@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/select";
 
 import { useDispatch } from "react-redux";
-import { setQueryS } from "../reducers/querySlice";
+import { setQstatus, setQueryS } from "../reducers/querySlice";
+import { Button } from "@/components/ui/button";
 
 const Header = () => {
   const disP = useDispatch();
@@ -20,12 +21,12 @@ const Header = () => {
   function debounce() {
     let timeout: any;
 
-    return function (str: string) {
+    return function (str: string, type: string) {
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
-        console.log("search");
-        disP(setQueryS(str));
+        if (type === "search") disP(setQueryS(str));
+        else disP(setQstatus(str));
       }, 500);
     };
   }
@@ -33,26 +34,35 @@ const Header = () => {
   const trigger = debounce();
 
   return (
-    <header className="flex items-center justify-between p-[10px_20px]">
-      <div>
-        <Input
-          placeholder="Search"
-          onChange={(e) => trigger(e.target.value.trim().toLowerCase())}
-        />
+    <header className="border-b-[2px] border-indigo-800">
+      <div className="cont">
+        <div className="flex items-center justify-between p-[10px_20px]">
+          <div>
+            <Input
+              placeholder="Search"
+              onChange={(e) =>
+                trigger(e.target.value.trim().toLowerCase(), "search")
+              }
+            />
+          </div>
+          <div className="flex justify-between items-center gap-3">
+            <Button>Add</Button>
+            <Select onValueChange={(e) => trigger(e, "status")}>
+              <SelectTrigger className="w-full max-w-48">
+                <SelectValue placeholder="Select a status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Status</SelectLabel>
+                  <SelectItem value=" ">All</SelectItem>
+                  <SelectItem value="false">Inactive</SelectItem>
+                  <SelectItem value="true">Active</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
-      <Select>
-        <SelectTrigger className="w-full max-w-48">
-          <SelectValue placeholder="Select a status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Status</SelectLabel>
-            <SelectItem value=" ">All</SelectItem>
-            <SelectItem value="false">Inactive</SelectItem>
-            <SelectItem value="true">Active</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
     </header>
   );
 };

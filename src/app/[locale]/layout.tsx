@@ -55,7 +55,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <RTKprovider>
             <div>
               <Header />
-              {children}
+              <div className="cont">{children}</div>
             </div>
           </RTKprovider>
         </NextIntlClientProvider>

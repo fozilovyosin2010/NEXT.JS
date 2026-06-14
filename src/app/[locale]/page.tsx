@@ -1,9 +1,10 @@
 "use client";
 
-import { useGetTodosQuery } from "@/src/api/todo.api";
+import { useDelTodosMutation, useGetTodosQuery } from "@/src/api/todo.api";
 import { useTranslations } from "next-intl";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-import { MoreHorizontalIcon } from "lucide-react";
+import { CircleX, MoreHorizontalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,14 +28,23 @@ import clsx from "clsx";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 
+const isFetchBaseQueryError = (error: unknown): error is FetchBaseQueryError =>
+  typeof error === "object" && error !== null && "status" in error;
+
 const page = () => {
-  const queryS = useSelector((e: RootState) => e.slice.queryS);
+  const queries = useSelector((e: RootState) => e.slice);
 
   const t = useTranslations();
 
-  const { data, isFetching } = useGetTodosQuery(queryS);
+  const { data, isFetching, error } = useGetTodosQuery(queries, {
+    pollingInterval: 300000,
+  });
 
-  console.log(queryS);
+  const [delTodo] = useDelTodosMutation();
+
+  const isNotafoundErr = isFetchBaseQueryError(error) && error.status === 404;
+
+  if (isNotafoundErr) return <div>Not found!</div>;
 
   return (
     <div>
@@ -57,6 +67,7 @@ const page = () => {
             {isFetching ? (
               <SkeletonFallBack />
             ) : (
+              !isNotafoundErr &&
               data?.map((e: Idata) => {
                 return (
                   <TableRow key={e.id}>
@@ -92,7 +103,11 @@ const page = () => {
                           <DropdownMenuItem>Edit</DropdownMenuItem>
                           <DropdownMenuItem>Duplicate</DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem variant="destructive">
+                          <DropdownMenuItem
+                            onClick={() => delTodo(e.id)}
+                            variant="destructive"
+                          >
+                            <CircleX color="#ff0000" />
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

@@ -19,4 +19,4 @@ export const querySlice = createSlice({
 });
 
 export default querySlice.reducer;
-export const { setQueryS } = querySlice.actions;
+export const { setQueryS, setQstatus } = querySlice.actions;
