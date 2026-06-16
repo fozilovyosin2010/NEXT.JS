@@ -14,6 +14,7 @@ import {
 import { useDispatch } from "react-redux";
 import { setQstatus, setQueryS } from "../reducers/querySlice";
 import { Button } from "@/components/ui/button";
+import { setModal } from "../reducers/uiSlice";
 
 const Header = () => {
   const disP = useDispatch();
@@ -33,6 +34,11 @@ const Header = () => {
 
   const trigger = debounce();
 
+  // add modal
+  function hanOpenAdd() {
+    disP(setModal([true, "add"]));
+  }
+
   return (
     <header className="border-b-[2px] border-indigo-800">
       <div className="cont">
@@ -46,7 +52,7 @@ const Header = () => {
             />
           </div>
           <div className="flex justify-between items-center gap-3">
-            <Button>Add</Button>
+            <Button onClick={hanOpenAdd}>Add</Button>
             <Select onValueChange={(e) => trigger(e, "status")}>
               <SelectTrigger className="w-full max-w-48">
                 <SelectValue placeholder="Select a status" />

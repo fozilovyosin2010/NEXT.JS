@@ -1,3 +1,4 @@
+import uiSlice from "./../reducers/uiSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import { todoApi } from "../api/todo.api";
 import querySlice from "../reducers/querySlice";
@@ -5,6 +6,7 @@ import querySlice from "../reducers/querySlice";
 export const store = configureStore({
   reducer: {
     slice: querySlice,
+    uiSlice,
     [todoApi.reducerPath]: todoApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

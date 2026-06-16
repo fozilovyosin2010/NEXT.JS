@@ -22,7 +22,16 @@ export const todoApi = createApi({
       }),
       invalidatesTags: ["todo"],
     }),
+    editTodo: build.mutation({
+      query: (obj: Idata) => ({
+        url: `/${obj.id}`,
+        method: "PUT",
+        body: obj,
+      }),
+      invalidatesTags: ["todo"],
+    }),
   }),
 });
 
-export const { useGetTodosQuery, useDelTodosMutation } = todoApi;
+export const { useGetTodosQuery, useDelTodosMutation, useEditTodoMutation } =
+  todoApi;

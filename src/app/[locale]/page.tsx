@@ -1,10 +1,21 @@
 "use client";
 
-import { useDelTodosMutation, useGetTodosQuery } from "@/src/api/todo.api";
-import { useTranslations } from "next-intl";
+import {
+  useDelTodosMutation,
+  useEditTodoMutation,
+  useGetTodosQuery,
+} from "@/src/api/todo.api";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-import { CircleX, MoreHorizontalIcon } from "lucide-react";
+import { Idata, Schema } from "@/src/api/type.api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/src/store/store";
+import { setModal } from "@/src/reducers/uiSlice";
+
+import { useTranslations } from "next-intl";
+
+import { CircleCheck, CircleX, MoreHorizontalIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,11 +33,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { SkeletonFallBack } from "@/src/shared/Skeleton";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
-import { Idata } from "@/src/api/type.api";
 import clsx from "clsx";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/store/store";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const isFetchBaseQueryError = (error: unknown): error is FetchBaseQueryError =>
   typeof error === "object" && error !== null && "status" in error;
@@ -36,22 +57,52 @@ const page = () => {
 
   const t = useTranslations();
 
-  const { data, isFetching, error } = useGetTodosQuery(queries, {
+  const { data, isFetching, error, isLoading } = useGetTodosQuery(queries, {
     pollingInterval: 300000,
   });
 
   const [delTodo] = useDelTodosMutation();
+  const [editMutation] = useEditTodoMutation();
 
   const isNotafoundErr = isFetchBaseQueryError(error) && error.status === 404;
 
+  function checkedData(e: Idata) {
+    editMutation({ ...e, status: !e.status });
+  }
+
   if (isNotafoundErr) return <div>Not found!</div>;
+
+  // add modal
+
+  const { openAdd } = useSelector((e: RootState) => e.uiSlice);
+  const disP = useDispatch();
+
+  function hanCloseAdd() {
+    disP(setModal([false, "add"]));
+  }
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitted },
+  } = useForm({
+    resolver: zodResolver(Schema),
+  });
+
+  function hanAddSubmit(e: any) {
+    console.log(e);
+  }
+  const errMessage = Object.values(errors).map((e) => e.message);
 
   return (
     <div>
       <p>{t("head")}</p>
 
       <main className="overflow-x-auto m-2">
-        <Table className="border">
+        <Table
+          className={`border ${isFetching !== isLoading ? "loading" : null}`}
+        >
           <TableHeader>
             <TableRow className="bg-[#4999fb]">
               <TableHead>Name</TableHead>
@@ -64,14 +115,14 @@ const page = () => {
           </TableHeader>
           <TableBody>
             {/* here */}
-            {isFetching ? (
+            {isLoading ? (
               <SkeletonFallBack />
             ) : (
               !isNotafoundErr &&
               data?.map((e: Idata) => {
                 return (
                   <TableRow key={e.id}>
-                    <TableCell className="font-medium">{e.name}</TableCell>
+                    <TableCell>{e.name}</TableCell>
                     <TableCell className="font-medium">{e.city}</TableCell>
                     <TableCell className="font-medium">{e.age}</TableCell>
                     <TableCell className="font-medium">{e.job}</TableCell>
@@ -101,7 +152,13 @@ const page = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => checkedData(e)}
+                            className="text-[#008a1c]"
+                          >
+                            <CircleCheck />
+                            Checked
+                          </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             onClick={() => delTodo(e.id)}
@@ -120,6 +177,42 @@ const page = () => {
           </TableBody>
         </Table>
       </main>
+      {/* add modal */}
+
+      <Dialog open={openAdd} onOpenChange={(e) => disP(setModal([e, "add"]))}>
+        <DialogContent className="sm:max-w-sm">
+          <div>
+            <p className="text-rose-500">{errMessage[0]}</p>
+          </div>
+          <form onSubmit={handleSubmit(hanAddSubmit)}>
+            <DialogHeader>
+              <DialogTitle>Add modal</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you&apos;re
+                done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="my-2 flex flex-col gap-4">
+              {["name", "city", "job", "age"].map((e) => (
+                <div key={e} className="space-y-3">
+                  <Label>{e.at(0)?.toUpperCase() + e.slice(1)}</Label>
+                  <Input
+                    {...register(e as any, { valueAsNumber: e === "age" })}
+                    // name={e}
+                    placeholder={`${e.at(0)?.toUpperCase() + e.slice(1)}...`}
+                  />
+                </div>
+              ))}
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+              <Button type="submit">Save changes</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
