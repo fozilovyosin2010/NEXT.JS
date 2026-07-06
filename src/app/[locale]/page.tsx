@@ -1,20 +1,13 @@
 "use client";
 
-import {
-  useDelTodosMutation,
-  useEditTodoMutation,
-  useGetTodosQuery,
-} from "@/src/api/todo.api";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-
-import { Idata, Schema } from "@/src/api/type.api";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/store/store";
-import { setModal } from "@/src/reducers/uiSlice";
-
 import { useTranslations } from "next-intl";
 
-import { CircleCheck, CircleX, MoreHorizontalIcon } from "lucide-react";
+import {
+  CircleCheck,
+  CircleX,
+  MoreHorizontalIcon,
+  SquarePen,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -48,52 +41,79 @@ import { Input } from "@/components/ui/input";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const isFetchBaseQueryError = (error: unknown): error is FetchBaseQueryError =>
-  typeof error === "object" && error !== null && "status" in error;
+import { useEffect, useState } from "react";
+import { Idata } from "@/src/atoms/types.atom";
+import { useAtom } from "jotai";
+import { checkTodo, delTodo, getTodos, trigger } from "@/src/atoms/atom";
 
 const page = () => {
-  const queries = useSelector((e: RootState) => e.slice);
-
   const t = useTranslations();
 
-  const { data, isFetching, error, isLoading } = useGetTodosQuery(queries, {
-    pollingInterval: 300000,
-  });
-
-  const [delTodo] = useDelTodosMutation();
-  const [editMutation] = useEditTodoMutation();
-
-  const isNotafoundErr = isFetchBaseQueryError(error) && error.status === 404;
-
-  function checkedData(e: Idata) {
-    editMutation({ ...e, status: !e.status });
+  function hanOpenEdit(elem: any) {
+    // setIsEditMod(true);
+    // const arr = Object.entries(elem);
+    // arr.forEach((e) => setValue(e[0] as keyof Idata, e[1]));
+    // disP(setModal(true));
   }
 
-  if (isNotafoundErr) return <div>Not found!</div>;
+  const data = [
+    {
+      id: 1227,
+      isCompleted: false,
+      images: [],
+      name: "fdsfsd",
+      description: "sfdsdf",
+    },
+    {
+      id: 1228,
+      isCompleted: false,
+      images: [],
+      name: "dsf",
+      description: "sdf",
+    },
+    {
+      id: 1233,
+      isCompleted: false,
+      images: [],
+      name: "пмпр",
+      description: "псапсап",
+    },
+    {
+      id: 1240,
+      isCompleted: false,
+      images: [
+        {
+          id: 1666,
+          imageName: "44b6275e-7757-4bc2-bbc2-c690a6af4c4d.png",
+        },
+      ],
+      name: "hj",
+      description: "j",
+    },
+    {
+      id: 1241,
+      isCompleted: false,
+      images: [
+        {
+          id: 1667,
+          imageName: "3c3a6d0b-9fb2-45fb-a9e5-b81989594c08.png",
+        },
+      ],
+      name: "df",
+      description: "Online Omuz",
+    },
+  ];
 
-  // add modal
+  const [todos] = useAtom(getTodos);
 
-  const { openAdd } = useSelector((e: RootState) => e.uiSlice);
-  const disP = useDispatch();
+  const [, delData] = useAtom(delTodo);
+  const [, checkData] = useAtom(checkTodo);
 
-  function hanCloseAdd() {
-    disP(setModal([false, "add"]));
+  function checkedData(e: number) {
+    checkData(e);
   }
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitted },
-  } = useForm({
-    resolver: zodResolver(Schema),
-  });
-
-  function hanAddSubmit(e: any) {
-    console.log(e);
-  }
-  const errMessage = Object.values(errors).map((e) => e.message);
+  console.log(todos);
 
   return (
     <div>
@@ -101,92 +121,92 @@ const page = () => {
 
       <main className="overflow-x-auto m-2">
         <Table
-          className={`border ${isFetching !== isLoading ? "loading" : null}`}
+          className={`border ${todos.state == "loading" ? "loading" : null}`}
         >
           <TableHeader>
-            <TableRow className="bg-[#4999fb]">
+            <TableRow className="bg-[#4999fb] hover:bg-[#2586fd]">
               <TableHead>Name</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Job</TableHead>
-              <TableHead>Age</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {/* here */}
-            {isLoading ? (
-              <SkeletonFallBack />
-            ) : (
-              !isNotafoundErr &&
-              data?.map((e: Idata) => {
-                return (
-                  <TableRow key={e.id}>
-                    <TableCell>{e.name}</TableCell>
-                    <TableCell className="font-medium">{e.city}</TableCell>
-                    <TableCell className="font-medium">{e.age}</TableCell>
-                    <TableCell className="font-medium">{e.job}</TableCell>
-                    <TableCell className="font-medium">
-                      <span
-                        className={clsx(
-                          e.status
-                            ? "bg-blue-300 border border-blue-600 text-blue-600"
-                            : "bg-red-300 border border-red-600 text-red-600",
-                          "p-2 text-[8px] font-[600] rounded-[60px]",
-                        )}
-                      >
-                        {e.status ? "ACTIVE" : "INACTIVE"}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                          >
-                            <MoreHorizontalIcon />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => checkedData(e)}
-                            className="text-[#008a1c]"
-                          >
-                            <CircleCheck />
-                            Checked
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => delTodo(e.id)}
-                            variant="destructive"
-                          >
-                            <CircleX color="#ff0000" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
+            {todos?.data?.map((e: Idata) => {
+              return (
+                <TableRow key={e.id}>
+                  <TableCell>{e.name}</TableCell>
+                  <TableCell className="font-medium">{e.description}</TableCell>
+                  <TableCell className="font-medium">
+                    <img
+                      className="w-[150px] h-[100px]"
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/images/${e?.images[0]?.imageName}`}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    <span
+                      className={clsx(
+                        e.isCompleted
+                          ? "bg-blue-300 border border-blue-600 text-blue-600"
+                          : "bg-red-300 border border-red-600 text-red-600",
+                        "p-2 text-[8px] font-[600] rounded-[60px]",
+                      )}
+                    >
+                      {e.isCompleted ? "ACTIVE" : "INACTIVE"}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="size-8">
+                          <MoreHorizontalIcon />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => hanOpenEdit(e)}
+                          className="text-[#0062ff] font-medium"
+                        >
+                          <SquarePen size={20} />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => checkedData(e.id)}
+                          className="text-[#008a1c]"
+                        >
+                          <CircleCheck />
+                          Checked
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => delData(e.id)}
+                          variant="destructive"
+                        >
+                          <CircleX color="#ff0000" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </main>
       {/* add modal */}
 
-      <Dialog open={openAdd} onOpenChange={(e) => disP(setModal([e, "add"]))}>
+      {/* <Dialog open={openAdd} onOpenChange={(e) => disP(setModal(e))}>
         <DialogContent className="sm:max-w-sm">
           <div>
             <p className="text-rose-500">{errMessage[0]}</p>
           </div>
           <form onSubmit={handleSubmit(hanAddSubmit)}>
             <DialogHeader>
-              <DialogTitle>Add modal</DialogTitle>
+              <DialogTitle>{isEditMod ? "Edit" : "Add"} modal</DialogTitle>
               <DialogDescription>
                 Make changes to your profile here. Click save when you&apos;re
                 done.
@@ -198,7 +218,6 @@ const page = () => {
                   <Label>{e.at(0)?.toUpperCase() + e.slice(1)}</Label>
                   <Input
                     {...register(e as any, { valueAsNumber: e === "age" })}
-                    // name={e}
                     placeholder={`${e.at(0)?.toUpperCase() + e.slice(1)}...`}
                   />
                 </div>
@@ -208,11 +227,11 @@ const page = () => {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit">{isEditMod ? "Edit" : "Add"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

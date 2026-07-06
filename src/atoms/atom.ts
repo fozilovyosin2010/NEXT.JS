@@ -1,0 +1,39 @@
+import { atom } from "jotai";
+import { myAxios } from "../utils/api";
+import { number } from "zod";
+import { loadable } from "jotai/utils";
+
+export const trigger = atom(false);
+
+const getTodosAsync = atom(async (get) => {
+  get(trigger);
+  try {
+    const { data } = await myAxios.get(`/api/to-dos`);
+    return data.data;
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+export const delTodo = atom(null, async (get, set, id: number) => {
+  try {
+    await myAxios.delete(`/api/to-dos?id=${id}`);
+    set(trigger, !get(trigger));
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+export const checkTodo = atom(null, async (get, set, id: number) => {
+  try {
+    await myAxios.put(`completed?id=${id}`);
+
+    set(trigger, !get(trigger));
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// ____________
+
+export const getTodos = loadable(getTodosAsync);

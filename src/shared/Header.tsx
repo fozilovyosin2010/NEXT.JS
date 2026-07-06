@@ -11,49 +11,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { useDispatch } from "react-redux";
-import { setQstatus, setQueryS } from "../reducers/querySlice";
 import { Button } from "@/components/ui/button";
-import { setModal } from "../reducers/uiSlice";
+import { useRouter } from "../i18n/navigation";
 
 const Header = () => {
-  const disP = useDispatch();
-
-  function debounce() {
-    let timeout: any;
-
-    return function (str: string, type: string) {
-      clearTimeout(timeout);
-
-      timeout = setTimeout(() => {
-        if (type === "search") disP(setQueryS(str));
-        else disP(setQstatus(str));
-      }, 500);
-    };
-  }
-
-  const trigger = debounce();
-
-  // add modal
-  function hanOpenAdd() {
-    disP(setModal([true, "add"]));
-  }
+  const router = useRouter;
 
   return (
     <header className="border-b-[2px] border-indigo-800">
       <div className="cont">
         <div className="flex items-center justify-between p-[10px_20px]">
           <div>
-            <Input
-              placeholder="Search"
-              onChange={(e) =>
-                trigger(e.target.value.trim().toLowerCase(), "search")
-              }
-            />
+            <Input placeholder="Search" />
           </div>
           <div className="flex justify-between items-center gap-3">
-            <Button onClick={hanOpenAdd}>Add</Button>
-            <Select onValueChange={(e) => trigger(e, "status")}>
+            <Button>Add</Button>
+            <Select>
               <SelectTrigger className="w-full max-w-48">
                 <SelectValue placeholder="Select a status" />
               </SelectTrigger>
@@ -63,6 +36,16 @@ const Header = () => {
                   <SelectItem value=" ">All</SelectItem>
                   <SelectItem value="false">Inactive</SelectItem>
                   <SelectItem value="true">Active</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select>
+              <SelectTrigger className="w-full max-w-48">
+                <SelectValue placeholder="Select a status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true"></SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>

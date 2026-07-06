@@ -1,4 +1,7 @@
 {
   "head": "Hello",
-  "story_title": "Story"
+  "story_title": "Story",
+  "en": "en",
+  "ru": "ru",
+  "tj": "tj"
 }
