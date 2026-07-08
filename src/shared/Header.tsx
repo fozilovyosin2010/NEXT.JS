@@ -13,9 +13,17 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "../i18n/navigation";
+import { useAtom } from "jotai";
+import { openMod } from "../atoms/atom";
 
 const Header = () => {
   const router = useRouter;
+
+  const [mod, setMod] = useAtom(openMod);
+
+  function hanOpenMod() {
+    setMod(true);
+  }
 
   return (
     <header className="border-b-[2px] border-indigo-800">
@@ -25,7 +33,7 @@ const Header = () => {
             <Input placeholder="Search" />
           </div>
           <div className="flex justify-between items-center gap-3">
-            <Button>Add</Button>
+            <Button onClick={hanOpenMod}>Add</Button>
             <Select>
               <SelectTrigger className="w-full max-w-48">
                 <SelectValue placeholder="Select a status" />

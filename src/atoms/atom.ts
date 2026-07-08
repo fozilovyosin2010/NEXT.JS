@@ -1,9 +1,10 @@
 import { atom } from "jotai";
 import { myAxios } from "../utils/api";
-import { number } from "zod";
-import { loadable } from "jotai/utils";
+import { unwrap } from "jotai/utils";
 
 export const trigger = atom(false);
+
+export const openMod = atom(false);
 
 const getTodosAsync = atom(async (get) => {
   get(trigger);
@@ -36,4 +37,5 @@ export const checkTodo = atom(null, async (get, set, id: number) => {
 
 // ____________
 
-export const getTodos = loadable(getTodosAsync);
+const loading_state = { state: "loading", data: [] };
+export const getTodos = unwrap(getTodosAsync, () => loading_state);

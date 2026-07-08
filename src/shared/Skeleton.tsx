@@ -16,11 +16,8 @@ export function SkeletonFallBack() {
       <TableCell className="font-medium">
         <Skeleton className="h-4 w-full" />
       </TableCell>
-      <TableCell className="font-medium">
+      <TableCell className="font-medium ml-4">
         <Skeleton className="h-4 w-[50%]" />
-      </TableCell>
-      <TableCell className="font-medium">
-        <Skeleton className="h-4 w-full" />
       </TableCell>
     </TableRow>
   ));
