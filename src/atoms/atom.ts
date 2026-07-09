@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 import { myAxios } from "../utils/api";
 import { unwrap } from "jotai/utils";
+import { Idata } from "./types.atom";
 
 export const trigger = atom(false);
 
@@ -28,6 +29,16 @@ export const delTodo = atom(null, async (get, set, id: number) => {
 export const checkTodo = atom(null, async (get, set, id: number) => {
   try {
     await myAxios.put(`completed?id=${id}`);
+
+    set(trigger, !get(trigger));
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+export const postTodo = atom(null, async (get, set, obj: FormData) => {
+  try {
+    await myAxios.post(`/api/to-dos`, obj);
 
     set(trigger, !get(trigger));
   } catch (error) {

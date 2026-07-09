@@ -13,20 +13,16 @@ export interface Iimage {
   imageName: string;
 }
 
-const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+// const ACCEPTED_TYPES = ["image/*"];
 
 export const postSchema = z.object({
   name: z.string().nonempty("Please input name-field"),
   des: z.string().nonempty("Please input description-field"),
-  img: z
-    .any()
-    .transform((files) => files?.[0]) // Grab the first file from the FileList automatically
-    .pipe(
-      z
-        .instanceof(File, { message: "Please select an image file" })
-        .refine(
-          (f) => ACCEPTED_TYPES.includes(f.type),
-          "Unsupported image format.",
-        ),
-    ),
+  img: z.any().refine(
+    (files) => files.length > 0,
+    //checking validation (if empty inp-file that means => files.length===0)
+    {
+      message: "Please select an image file",
+    },
+  ),
 });

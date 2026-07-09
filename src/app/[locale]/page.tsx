@@ -44,7 +44,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Idata, postSchema } from "@/src/atoms/types.atom";
 import { useAtom } from "jotai";
-import { checkTodo, delTodo, getTodos, openMod } from "@/src/atoms/atom";
+import {
+  checkTodo,
+  delTodo,
+  getTodos,
+  openMod,
+  postTodo,
+} from "@/src/atoms/atom";
 
 const page = () => {
   const t = useTranslations();
@@ -53,6 +59,7 @@ const page = () => {
 
   const [, delData] = useAtom(delTodo);
   const [, checkData] = useAtom(checkTodo);
+  const [, postData] = useAtom(postTodo);
 
   const [mod, setMod] = useAtom(openMod);
 
@@ -74,10 +81,19 @@ const page = () => {
   function hanModSubmit(e: any) {
     const formData = new FormData();
     formData.append("Name", e.name);
-    formData.append("Des", e.des);
-    formData.append("Image", e.img);
+    formData.append("Description", e.des);
 
-    console.log(Object.fromEntries(formData));
+    if (e.img) {
+      formData.append("Images", e.img?.[0]);
+    }
+
+    postData(formData);
+    closeMod();
+  }
+
+  function closeMod() {
+    setMod(false);
+    reset();
   }
 
   const errMess = Object.values(errors)[0]?.message;
@@ -193,16 +209,24 @@ const page = () => {
               </DialogDescription>
             </DialogHeader>
             <div className="my-2 flex flex-col gap-4">
-              {["name", "des", "img"].map((e) => (
+              {["name", "des"].map((e) => (
                 <div key={e} className="space-y-3">
                   <Label>{e.at(0)?.toUpperCase() + e.slice(1)}</Label>
                   <Input
                     {...register(e as any)}
-                    type={e === "img" ? "file" : "text"}
                     placeholder={`${e.at(0)?.toUpperCase() + e.slice(1)}...`}
                   />
                 </div>
               ))}
+              <div className="space-y-3">
+                <Label>Image</Label>
+                <Input
+                  {...register("img")}
+                  type="file"
+                  accept="image/*"
+                  placeholder={`Image`}
+                />
+              </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
