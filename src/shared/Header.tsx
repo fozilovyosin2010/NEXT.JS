@@ -40,19 +40,6 @@ const Header = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Status</SelectLabel>
-                  <SelectItem value=" ">All</SelectItem>
-                  <SelectItem value="false">Inactive</SelectItem>
-                  <SelectItem value="true">Active</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Select>
-              <SelectTrigger className="w-full max-w-48">
-                <SelectValue placeholder="Select a status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
                   <SelectItem value="true"></SelectItem>
                 </SelectGroup>
               </SelectContent>

@@ -45,6 +45,15 @@ export const postTodo = atom(null, async (get, set, obj: FormData) => {
     console.error(error);
   }
 });
+export const putTodo = atom(null, async (get, set, obj: FormData) => {
+  try {
+    await myAxios.put(`/api/to-dos`, obj);
+
+    set(trigger, !get(trigger));
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 // ____________
 

@@ -42,7 +42,7 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { Idata, postSchema } from "@/src/atoms/types.atom";
+import { Idata, postSchema, putSchema } from "@/src/atoms/types.atom";
 import { useAtom } from "jotai";
 import {
   checkTodo,
@@ -50,6 +50,7 @@ import {
   getTodos,
   openMod,
   postTodo,
+  putTodo,
 } from "@/src/atoms/atom";
 
 const page = () => {
@@ -60,8 +61,10 @@ const page = () => {
   const [, delData] = useAtom(delTodo);
   const [, checkData] = useAtom(checkTodo);
   const [, postData] = useAtom(postTodo);
+  const [, putData] = useAtom(putTodo);
 
   const [mod, setMod] = useAtom(openMod);
+  const [isEditMod, setIsEditMod] = useState(false);
 
   function checkedData(e: number) {
     checkData(e);
@@ -74,29 +77,52 @@ const page = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValues,
   } = useForm({
-    resolver: zodResolver(postSchema),
+    // here
+    resolver: zodResolver(isEditMod ? putSchema : postSchema),
   });
 
   function hanModSubmit(e: any) {
-    const formData = new FormData();
-    formData.append("Name", e.name);
-    formData.append("Description", e.des);
+    if (isEditMod) {
+      const obj = { ...e, id: editIdx };
+      console.log(obj);
 
-    if (e.img) {
-      formData.append("Images", e.img?.[0]);
+      putData(obj);
+    } else {
+      const formData = new FormData();
+      formData.append("Name", e.name);
+      formData.append("Description", e.description);
+
+      if (e.img) {
+        formData.append("Images", e.img?.[0]);
+      }
+
+      postData(formData);
     }
-
-    postData(formData);
     closeMod();
   }
 
   function closeMod() {
     setMod(false);
+    setIsEditMod(false);
+    setEditIdx(null);
     reset();
   }
 
   const errMess = Object.values(errors)[0]?.message;
+
+  const [editIdx, setEditIdx] = useState<null | number>(null);
+
+  function hanOpenModEdit(e: Idata) {
+    setValues(e);
+    setEditIdx(e.id);
+
+    setIsEditMod(true);
+    setMod(true);
+  }
+
+  console.log(errors);
 
   return (
     <div>
@@ -154,7 +180,7 @@ const page = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
-                            // onClick={() => hanOpenEdit(e)}
+                            onClick={() => hanOpenModEdit(e)}
                             className="text-[#0062ff] font-medium"
                           >
                             <SquarePen size={20} />
@@ -187,7 +213,7 @@ const page = () => {
           </TableBody>
         </Table>
       </main>
-      {/* add modal */}
+      {/* add/edit modal */}
 
       <Dialog
         open={mod}
@@ -202,14 +228,14 @@ const page = () => {
           </div>
           <form onSubmit={handleSubmit(hanModSubmit)}>
             <DialogHeader>
-              <DialogTitle>Add modal</DialogTitle>
+              <DialogTitle>{isEditMod ? "Edit" : "Add"} modal</DialogTitle>
               <DialogDescription>
                 Make changes to your profile here. Click save when you&apos;re
                 done.
               </DialogDescription>
             </DialogHeader>
             <div className="my-2 flex flex-col gap-4">
-              {["name", "des"].map((e) => (
+              {["name", "description"].map((e) => (
                 <div key={e} className="space-y-3">
                   <Label>{e.at(0)?.toUpperCase() + e.slice(1)}</Label>
                   <Input
@@ -218,21 +244,23 @@ const page = () => {
                   />
                 </div>
               ))}
-              <div className="space-y-3">
-                <Label>Image</Label>
-                <Input
-                  {...register("img")}
-                  type="file"
-                  accept="image/*"
-                  placeholder={`Image`}
-                />
-              </div>
+              {!isEditMod && (
+                <div className="space-y-3">
+                  <Label>Image</Label>
+                  <Input
+                    {...register("img" as any)}
+                    type="file"
+                    accept="image/*"
+                    placeholder={`Image`}
+                  />
+                </div>
+              )}
             </div>
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button type="submit">Add</Button>
+              <Button type="submit">{isEditMod ? "Edit" : "Add"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
