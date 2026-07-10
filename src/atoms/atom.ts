@@ -8,6 +8,8 @@ export const openMod = atom(false);
 
 export const inpS = atom("");
 
+export const status = atom("");
+
 const getTodosAsync = atom(async (get) => {
   get(trigger);
   try {

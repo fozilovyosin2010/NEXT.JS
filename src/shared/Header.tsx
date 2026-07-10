@@ -6,7 +6,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -14,13 +13,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "../i18n/navigation";
 import { useAtom } from "jotai";
-import { inpS, openMod, trigger } from "../atoms/atom";
+import { inpS, openMod, status, trigger } from "../atoms/atom";
 
 const Header = () => {
   const router = useRouter;
 
   const [mod, setMod] = useAtom(openMod);
   const [triggerVal, setTrigger] = useAtom(trigger);
+  const [statusF, setStatusF] = useAtom(status);
 
   function hanOpenMod() {
     setMod(true);
@@ -58,13 +58,19 @@ const Header = () => {
           </div>
           <div className="flex justify-between items-center gap-3">
             <Button onClick={hanOpenMod}>Add</Button>
-            <Select>
+            <Select
+              value={statusF}
+              onValueChange={(e) => setStatusF(e)}
+              defaultValue=""
+            >
               <SelectTrigger className="w-full max-w-48">
                 <SelectValue placeholder="Select a status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="true"></SelectItem>
+                  <SelectItem value=" ">All</SelectItem>
+                  <SelectItem value="true">Complete</SelectItem>
+                  <SelectItem value="false">Incomplete</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
