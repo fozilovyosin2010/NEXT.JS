@@ -14,23 +14,47 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "../i18n/navigation";
 import { useAtom } from "jotai";
-import { openMod } from "../atoms/atom";
+import { inpS, openMod, trigger } from "../atoms/atom";
 
 const Header = () => {
   const router = useRouter;
 
   const [mod, setMod] = useAtom(openMod);
+  const [triggerVal, setTrigger] = useAtom(trigger);
 
   function hanOpenMod() {
     setMod(true);
   }
 
+  // filter
+  const [inpValue, setInpValue] = useAtom(inpS);
+
+  function debounce() {
+    let timer: any;
+    return function (value: string) {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        console.log(value);
+
+        setInpValue(value);
+        setTrigger(!triggerVal);
+      }, 500);
+    };
+  }
+
+  const debounce_trigger = debounce();
   return (
     <header className="border-b-[2px] border-indigo-800">
       <div className="cont">
         <div className="flex items-center justify-between p-[10px_20px]">
           <div>
-            <Input placeholder="Search" />
+            <Input
+              placeholder="Search"
+              // value={inpValue}
+              onChange={(e) => {
+                debounce_trigger(e.target.value);
+              }}
+            />
           </div>
           <div className="flex justify-between items-center gap-3">
             <Button onClick={hanOpenMod}>Add</Button>

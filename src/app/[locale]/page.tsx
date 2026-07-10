@@ -122,8 +122,6 @@ const page = () => {
     setMod(true);
   }
 
-  console.log(errors);
-
   return (
     <div>
       <p>{t("head")}</p>

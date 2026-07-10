@@ -1,17 +1,20 @@
 import { atom } from "jotai";
 import { myAxios } from "../utils/api";
 import { unwrap } from "jotai/utils";
-import { Idata } from "./types.atom";
 
 export const trigger = atom(false);
 
 export const openMod = atom(false);
 
+export const inpS = atom("");
+
 const getTodosAsync = atom(async (get) => {
   get(trigger);
   try {
-    const { data } = await myAxios.get(`/api/to-dos`);
-    return data.data;
+    if (inpS.toString().trim().length > 0) {
+      const { data } = await myAxios.get(`/api/to-dos?query=${get(inpS)}`);
+      return data.data;
+    }
   } catch (error) {
     console.error(error);
   }
