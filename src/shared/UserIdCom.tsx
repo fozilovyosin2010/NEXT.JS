@@ -36,10 +36,6 @@ interface Ibtn {
 }
 
 export function CardImage({ userId }: { userId: string }) {
-  // const [, getTodoId] = useAtom(getById);
-
-  // const [todoId] = useAtom(objInfo);
-
   const [todoById] = useAtom(getTodoById);
   const [idx, setIdx] = useAtom(infoIdx);
 
@@ -65,7 +61,7 @@ export function CardImage({ userId }: { userId: string }) {
       name: "delete",
       bg: "red",
       action: function () {
-        delTodoId(targetImg?.id as number);
+        if (targetImg?.id) delTodoId(targetImg.id as number);
       },
     },
     {
@@ -81,9 +77,9 @@ export function CardImage({ userId }: { userId: string }) {
   console.log(todoById);
 
   return (
-    <div className="flex min-h-[100vh]">
+    <div className="flex h-[calc(703px)] pt-2">
       {todoById?.images && todoById.images.length > 0 && (
-        <div className="con flex flex-col  max-w-[200px] gap-3 border-r-[2px] border-r-indigo-800 pr-3 py-3 min-h-full fixed top-[72px]">
+        <div className="con flex flex-col  max-w-[200px] gap-3 border-r-[2px] border-r-indigo-800 pr-3 py-5 min-h-full overflow-auto">
           {todoById?.images.map((e: Iimage) => {
             return (
               <img

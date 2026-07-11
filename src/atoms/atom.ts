@@ -1,7 +1,6 @@
 import { atom } from "jotai";
 import { myAxios } from "../utils/api";
 import { unwrap } from "jotai/utils";
-import { Idata } from "./types.atom";
 
 export const trigger = atom(false);
 

@@ -52,6 +52,7 @@ import {
   openMod,
   postTodo,
   putTodo,
+  status,
   triggerId,
 } from "@/src/atoms/atom";
 import { useRouter } from "next/navigation";
@@ -129,6 +130,8 @@ const page = () => {
 
   const [infoIdx, setInfoIdx] = useAtom(triggerId);
 
+  const [statusF, setStatusF] = useAtom(status);
+
   return (
     <div>
       <p>{t("head")}</p>
@@ -146,81 +149,89 @@ const page = () => {
           </TableHeader>
           <TableBody>
             {Array.isArray(todos) ? (
-              todos?.map((e: Idata) => {
-                return (
-                  <TableRow key={e.id}>
-                    <TableCell>{e.name}</TableCell>
-                    <TableCell className="font-medium">
-                      {e.description}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      <img
-                        className="w-[150px] h-[100px]"
-                        src={`${process.env.NEXT_PUBLIC_API_URL}/images/${e?.images[0]?.imageName}`}
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      <span
-                        className={clsx(
-                          e.isCompleted
-                            ? "bg-blue-300 border border-blue-600 text-blue-600"
-                            : "bg-red-300 border border-red-600 text-red-600",
-                          "p-2 text-[8px] font-[600] rounded-[60px]",
-                        )}
-                      >
-                        {e.isCompleted ? "ACTIVE" : "INACTIVE"}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                          >
-                            <MoreHorizontalIcon />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => hanOpenModEdit(e)}
-                            className="text-[#0062ff] font-medium"
-                          >
-                            <SquarePen size={20} />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => checkedData(e.id)}
-                            className="text-[#008a1c]"
-                          >
-                            <CircleCheck />
-                            Checked
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => {
-                              router.push(`user/${e.id}`);
-                              setInfoIdx(e.id as any);
-                            }}
-                          >
-                            <Info />
-                            Info
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => delData(e.id)}
-                            variant="destructive"
-                          >
-                            <CircleX color="#ff0000" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+              todos
+                ?.filter((e) =>
+                  statusF === "true"
+                    ? e.isCompleted
+                    : statusF === "false"
+                      ? !e.isCompleted
+                      : e,
+                )
+                ?.map((e: Idata) => {
+                  return (
+                    <TableRow key={e.id}>
+                      <TableCell>{e.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {e.description}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <img
+                          className="w-[150px] h-[100px]"
+                          src={`${process.env.NEXT_PUBLIC_API_URL}/images/${e?.images[0]?.imageName}`}
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <span
+                          className={clsx(
+                            e.isCompleted
+                              ? "bg-blue-300 border border-blue-600 text-blue-600"
+                              : "bg-red-300 border border-red-600 text-red-600",
+                            "p-2 text-[8px] font-[600] rounded-[60px]",
+                          )}
+                        >
+                          {e.isCompleted ? "ACTIVE" : "INACTIVE"}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                            >
+                              <MoreHorizontalIcon />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => hanOpenModEdit(e)}
+                              className="text-[#0062ff] font-medium"
+                            >
+                              <SquarePen size={20} />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => checkedData(e.id)}
+                              className="text-[#008a1c]"
+                            >
+                              <CircleCheck />
+                              Checked
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                router.push(`user/${e.id}`);
+                                setInfoIdx(e.id as any);
+                              }}
+                            >
+                              <Info />
+                              Info
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => delData(e.id)}
+                              variant="destructive"
+                            >
+                              <CircleX color="#ff0000" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
             ) : (
               <SkeletonFallBack />
             )}
